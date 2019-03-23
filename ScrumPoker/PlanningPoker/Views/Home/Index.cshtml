@@ -1,0 +1,96 @@
+﻿@{
+    ViewData["Title"] = "Home";
+}
+<div class="text-center">
+    <h2>Покер Планирования</h2>
+</div>
+<style>
+    .SignForm {
+        float: left;
+        width: 400px;
+        height: 425px;
+        border: 1px solid;
+        border-color: cadetblue;
+        background-color: aliceblue;
+        text-align: center;
+    }
+</style>
+<br />
+<div style="overflow:hidden; object-position:center;">
+
+    <div style="width: 100%; margin-left: 125px;">
+
+        <div class="SignForm">
+
+            @using (Html.BeginForm(FormMethod.Post))
+            {
+                <br />
+                <h4>
+                    Создание комнаты
+                </h4>
+                <p>
+                    @Html.Label("Имя")
+                    <br />
+                    @Html.TextBox("Name")
+
+                </p>
+                <p>
+                    @Html.Label("Название комнаты")
+                    <br />
+                    @Html.TextBox("RoomTitle")
+                </p>
+
+                <p>
+                    @Html.Label("Пароль")
+                    <br />
+                    @Html.TextBox("Password")
+                </p>
+                <p>
+                    @Html.Label("Тип карт")
+                    <br />
+                    <select name="CardsType" style="font-size:12px;">
+                        <option value=1>1,2,3,5,8,13,20,40,100,∞,?,CC</option>
+                        <option value=2>1,2,3,5,8,13,20,40,?</option>
+                        <option value=3>XS,S,M,L,XL,XXL,?</option>
+                        <option value=4>1,2,5,10,20,50,100</option>
+                    </select>
+
+                </p>
+                <input type="submit" value="Создать" formmethod="post" formaction="Home/RoomCreate" />
+            }
+        </div>
+
+        <div style="float:left; width: 65px; height: 100px;"></div>
+
+        <div class="SignForm">
+
+            @using (Html.BeginForm(FormMethod.Post))
+            {
+                <br />
+                <h4>
+                    Присоединение к комнате
+                </h4>
+                <p>
+                <p>
+                    @Html.Label("Имя")
+                </p>
+                @Html.TextBox("Name")
+                </p>
+                <p>
+                <p>
+                    @Html.Label("Id комнаты")
+                </p>
+                @Html.TextBox("RoomId")
+                </p>
+
+                <p>
+                    @Html.Label("Пароль")
+                    <p><input type="text" name="Password"  /></p>
+                </p>
+                <br />
+                <input type="submit" value="Присоедниться" formmethod="post" formaction="Home/RoomJoin" />
+            }
+        </div>
+    </div>
+</div>
+</div>
