@@ -30,13 +30,9 @@ namespace PlanningPoker.Controllers
                 if (Password is null)
                     throw new ArgumentNullException("Password");
 
-
-                using (var context = new PokerPlanningContext())
+                using (var _context = new PokerPlanningContext())
                 {
-                    Player NewPlayer; //Ведущий
-                    PokerRoom NewRoom; // Новая комната
-
-                    NewRoom = new PokerRoom()
+                    var NewRoom = new PokerRoom()
                     {
                         Title = RoomTitle,
                         Description = "",
@@ -46,13 +42,13 @@ namespace PlanningPoker.Controllers
                         TypeCards = CardsType
                     };
 
-                    context.Database.BeginTransaction();
+                    _context.Database.BeginTransactionAsync();
 
-                    context.PokerRooms.Add(NewRoom);
+                    _context.PokerRooms.Add(NewRoom);
 
-                    context.SaveChanges();
+                    _context.SaveChanges();
 
-                    NewPlayer = new Player()
+                    var NewPlayer = new Player()
                     {
                         Name = Name,
                         Role = 2,
@@ -60,11 +56,11 @@ namespace PlanningPoker.Controllers
                         IsOnline = false
                     };
 
-                    context.Players.Add(NewPlayer);
+                    _context.Players.Add(NewPlayer);
 
-                    context.SaveChanges();
+                    _context.SaveChanges();
 
-                    context.Database.CommitTransaction();
+                    _context.Database.CommitTransaction();
                 }
                 return RedirectToAction("Index"); //Сделать: переход в комнату
             }
@@ -89,15 +85,13 @@ namespace PlanningPoker.Controllers
                     throw new ArgumentNullException("Password");
 
 
-                using (var context = new PokerPlanningContext())
+                using (var _context = new PokerPlanningContext())
                 {
-                    PokerRoom Room = context.PokerRooms.Where(m => m.Id == RoomId).SingleOrDefault<PokerRoom>();
+                    var Room = _context.PokerRooms.Where(m => m.Id == RoomId).SingleOrDefault<PokerRoom>();
 
                     if (string.Compare(Room.Password, Password) == 0)//Проверка пароля, регистр важен
                     {
-                        Player NewPlayer;
-
-                        NewPlayer = new Player()
+                        var NewPlayer = new Player()
                         {
                             Name = Name,
                             Role = 1,
@@ -105,14 +99,14 @@ namespace PlanningPoker.Controllers
                             IsOnline = false
                         };
 
-                        var Checker = context.Players
+                        var Checker = _context.Players
                             .Where(m => m.PokerRoomId == NewPlayer.PokerRoomId
                             && string.Compare(NewPlayer.Name, m.Name, true) == 0).ToList<Player>().Count;
 
                         if (Checker == 0)//Создать нового пользователя
                         {
-                            context.Players.Add(NewPlayer);
-                            context.SaveChanges();
+                            _context.Players.Add(NewPlayer);
+                            _context.SaveChanges();
                             return RedirectToAction("Index");//Сделать: переход в комнату
                         }
                         else //Такой пользователь уже есть, зайти под ним
@@ -142,9 +136,9 @@ namespace PlanningPoker.Controllers
             return View();
         }
 
-        public IActionResult RoomsList()
+        public IActionResult RoomsList()//Вывод списка комнат
         {
-            using (var context = new PokerPlanningContext())
+            using (var _context = new PokerPlanningContext())
             {
                 #region Работает, анонимные типы, не пишется в таблицу. Задать вопрос.
                 //var RList = context.PokerRooms.ToList().OrderBy(m => m.CreateDate);
@@ -161,10 +155,10 @@ namespace PlanningPoker.Controllers
 
                 #endregion
 
-                #region Вспомогательная модель, вроде тоже душно
-                List<RoomListModel> roomListModels = new List<RoomListModel>();
+                #region Через вспомогательную модель
+                var roomListModels = new List<RoomListModel>();
 
-                var RList = context.PokerRooms.ToList().OrderBy(m => m.CreateDate);
+                var RList = _context.PokerRooms.ToList().OrderBy(m => m.CreateDate);
 
                 foreach (var b in RList)
                 {
@@ -172,8 +166,8 @@ namespace PlanningPoker.Controllers
                         (
                         b.Id,
                         b.Title, 
-                        context.Players.Count<Player>(m => m.PokerRoomId == b.Id)
-                        );
+                        _context.Players.Count<Player>(m => m.PokerRoomId == b.Id)
+                        ); //Создание модели для вывода списка в представление
                     roomListModels.Add(newmodel);
                 }
 
