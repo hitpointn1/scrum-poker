@@ -42,7 +42,7 @@ namespace PlanningPoker.Controllers
                         Description = "",
                         Password = Password,
                         CreateDate = DateTime.Now,
-                        CloseDate = DateTime.Now,
+                        CloseDate = null,
                         TypeCards = CardsType
                     };
 
@@ -56,7 +56,8 @@ namespace PlanningPoker.Controllers
                     {
                         Name = Name,
                         Role = 2,
-                        PokerRoomId = NewRoom.Id
+                        PokerRoomId = NewRoom.Id,
+                        IsOnline = false
                     };
 
                     context.Players.Add(NewPlayer);
@@ -100,7 +101,8 @@ namespace PlanningPoker.Controllers
                         {
                             Name = Name,
                             Role = 1,
-                            PokerRoomId = RoomId
+                            PokerRoomId = RoomId,
+                            IsOnline = false
                         };
 
                         var Checker = context.Players

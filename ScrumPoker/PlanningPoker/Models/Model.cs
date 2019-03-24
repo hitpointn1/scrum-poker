@@ -42,13 +42,14 @@ namespace PlanningPoker
         public int TypeCards { get; set; }
         public string Password { get; set; }
         public DateTime CreateDate { get; set; }
-        public DateTime CloseDate { get; set; }
+        public DateTime? CloseDate { get; set; }
     }
     public class Player
     {
         public int Id { get; set; }
         public string Name { get; set; }
         public int Role { get; set; }
+        public bool IsOnline { get; set; }
 
         public int PokerRoomId { get; set; }
         public PokerRoom PokerRoom { get; set; }
