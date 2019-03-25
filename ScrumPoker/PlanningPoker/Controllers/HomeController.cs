@@ -42,7 +42,7 @@ namespace PlanningPoker.Controllers
                         TypeCards = CardsType
                     };
 
-                    _context.Database.BeginTransactionAsync();
+                    _context.Database.BeginTransaction();
 
                     _context.PokerRooms.Add(NewRoom);
 
