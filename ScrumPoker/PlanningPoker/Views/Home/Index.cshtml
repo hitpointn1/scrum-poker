@@ -23,30 +23,32 @@
 
         <div class="SignForm">
 
-            @using (Html.BeginForm(FormMethod.Post))
-            {
+            <form asp-action="RoomCreate" asp-controller="Home" asp-antiforgery="true" method="post">
                 <br />
-                <h4>
+
+                <h4 style="margin-bottom: 10px;">
                     Создание комнаты
                 </h4>
-                <p>
+
+                <div style="margin-bottom: 15px;">
                     @Html.Label("Имя")
                     <br />
                     @Html.TextBox("Name")
+                </div>
 
-                </p>
-                <p>
+                <div style="margin-bottom: 15px;">
                     @Html.Label("Название комнаты")
                     <br />
                     @Html.TextBox("RoomTitle")
-                </p>
+                </div>
 
-                <p>
+                <div style="margin-bottom: 15px;">
                     @Html.Label("Пароль")
                     <br />
                     @Html.TextBox("Password")
-                </p>
-                <p>
+                </div>
+
+                <div style="margin-bottom: 20px;">
                     @Html.Label("Тип карт")
                     <br />
                     <select name="CardsType" style="font-size:12px;">
@@ -55,43 +57,50 @@
                         <option value=3>XS,S,M,L,XL,XXL,?</option>
                         <option value=4>1,2,5,10,20,50,100</option>
                     </select>
+                </div>
 
-                </p>
-                <input type="submit" value="Создать" formmethod="post" formaction="Home/RoomCreate" />
-            }
+                <input type="submit" value="Создать"/>
+                
+            </form>
         </div>
 
         <div style="float:left; width: 65px; height: 100px;"></div>
 
         <div class="SignForm">
 
-            @using (Html.BeginForm(FormMethod.Post))
-            {
+            <form asp-action="RoomJoin" asp-controller="Home" asp-antiforgery="true" method="post">
                 <br />
-                <h4>
+
+                <h4 style="margin-bottom: 40px;">
                     Присоединение к комнате
                 </h4>
-                <p>
-                <p>
-                    @Html.Label("Имя")
-                </p>
-                @Html.TextBox("Name")
-                </p>
-                <p>
-                <p>
-                    @Html.Label("Id комнаты")
-                </p>
-                @Html.TextBox("RoomId")
-                </p>
 
-                <p>
+                <div style="margin-bottom: 25px;">
+                    @Html.Label("Имя")
+                    <p>
+                        @Html.TextBox("Name")
+                    </p>
+                </div>
+
+                <div style="margin-bottom: 25px;">
+
+                    @Html.Label("Id комнаты")
+                    <p>
+                        @Html.TextBox("RoomId")
+                    </p>
+                </div>
+
+                <div style="margin-bottom: 15px;">
                     @Html.Label("Пароль")
-                    <p><input type="text" name="Password"  /></p>
-                </p>
+                    <p>
+                        @Html.TextBox("Password")
+                    </p>
+                </div>
+
                 <br />
-                <input type="submit" value="Присоедниться" formmethod="post" formaction="Home/RoomJoin" />
-            }
+
+                <input type="submit" value="Присоедниться"/>
+                </form>
         </div>
     </div>
-</div>
 </div>

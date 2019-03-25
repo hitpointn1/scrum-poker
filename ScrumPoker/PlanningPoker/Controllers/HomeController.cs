@@ -87,7 +87,7 @@ namespace PlanningPoker.Controllers
 
                 using (var _context = new PokerPlanningContext())
                 {
-                    var Room = _context.PokerRooms.Where(m => m.Id == RoomId).SingleOrDefault<PokerRoom>();
+                    var Room = _context.PokerRooms.Where(m => m.Id == RoomId).SingleOrDefault();
 
                     if (string.Compare(Room.Password, Password) == 0)//Проверка пароля, регистр важен
                     {
@@ -101,7 +101,7 @@ namespace PlanningPoker.Controllers
 
                         var Checker = _context.Players
                             .Where(m => m.PokerRoomId == NewPlayer.PokerRoomId
-                            && string.Compare(NewPlayer.Name, m.Name, true) == 0).ToList<Player>().Count;
+                            && string.Compare(NewPlayer.Name, m.Name, true) == 0).ToList().Count;
 
                         if (Checker == 0)//Создать нового пользователя
                         {
@@ -130,49 +130,26 @@ namespace PlanningPoker.Controllers
             }
         }
 
-
+        [HttpGet("Info")]
         public IActionResult Info() //ScrumPoker rules
         {
             return View();
         }
 
+
+        [HttpGet("List")]
         public IActionResult RoomsList()//Вывод списка комнат
         {
             using (var _context = new PokerPlanningContext())
             {
-                #region Работает, анонимные типы, не пишется в таблицу. Задать вопрос.
-                //var RList = context.PokerRooms.ToList().OrderBy(m => m.CreateDate);
-
-                //var Pcount = context.Players.ToList();
-
-                //var result = RList.GroupJoin(Pcount, R => R.Id, P => P.PokerRoomId,
-                //    (rl, pc) => new { rl.Id, rl.Title, PlayersCount = pc.Count() });
-
-                //ViewBag.Result = result;
-
-                //return View(ViewBag.Result);
-                //Как парсить анонимные типы? в данном случае он передает в виде {id = {rl.Id},....}
-
-                #endregion
-
-                #region Через вспомогательную модель
-                var roomListModels = new List<RoomListModel>();
-
                 var RList = _context.PokerRooms.ToList().OrderBy(m => m.CreateDate);
+                var Pcount = _context.Players.ToList();
 
-                foreach (var b in RList)
-                {
-                    var newmodel = new RoomListModel
-                        (
-                        b.Id,
-                        b.Title, 
-                        _context.Players.Count<Player>(m => m.PokerRoomId == b.Id)
-                        ); //Создание модели для вывода списка в представление
-                    roomListModels.Add(newmodel);
-                }
+                var rooms = RList.GroupJoin(Pcount, R => R.Id, P => P.PokerRoomId, 
+                    (rl, pc) => new RoomListModel(rl.Id, rl.Title, pc.Count()))
+                    .ToList();
 
-                return View(roomListModels);
-                #endregion
+                return View(rooms);
             }
         }
 
