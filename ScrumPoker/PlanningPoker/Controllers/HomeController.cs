@@ -17,7 +17,7 @@ namespace PlanningPoker.Controllers
         }
 
 
-        [HttpPost]
+        [HttpPost("Create")]
         public IActionResult RoomCreate(CreateModel Created)
         {
             // Creation of ScrumPoker room
@@ -62,7 +62,7 @@ namespace PlanningPoker.Controllers
         }
 
 
-        [HttpPost]
+        [HttpPost("Join")]
         public IActionResult RoomJoin(JoinModel Joined)
         {
             // Joining to ScrumPoker room
