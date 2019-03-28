@@ -14,7 +14,7 @@ namespace PlanningPoker
         }
         public PokerPlanningContext ()
         {
-            //_connectionString = @"Server=MSI;Initial Catalog=PokerPlanningDB;Trusted_Connection=True;";
+            _connectionString = @"Data Source=HITPOINT\MSSQLSERVER01;Initial Catalog=PokerPlanningDB;Integrated Security=True";
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

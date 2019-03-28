@@ -6,9 +6,11 @@
 </div>
 <style>
     .SignForm {
-        float: left;
+        float:left;
+        border-radius: 1em;
+        padding: 1em;
         width: 400px;
-        height: 425px;
+        height: 450px;
         border: 1px solid;
         border-color: cadetblue;
         background-color: aliceblue;
@@ -22,7 +24,6 @@
     <div style="width: 100%; margin-left: 125px;">
 
         <div class="SignForm">
-
             <form asp-action="RoomCreate" asp-controller="Home" asp-antiforgery="true" method="post">
                 <br />
 
@@ -33,19 +34,19 @@
                 <div style="margin-bottom: 15px;">
                     @Html.Label("Имя")
                     <br />
-                    @Html.TextBox("Name")
+                    <input type="text" name="Name" />
                 </div>
 
                 <div style="margin-bottom: 15px;">
                     @Html.Label("Название комнаты")
                     <br />
-                    @Html.TextBox("RoomTitle")
+                    <input type="text" name="RoomTitle" />
                 </div>
 
                 <div style="margin-bottom: 15px;">
                     @Html.Label("Пароль")
                     <br />
-                    @Html.TextBox("Password")
+                    <input type="text" name="Password" />
                 </div>
 
                 <div style="margin-bottom: 20px;">
@@ -59,7 +60,7 @@
                     </select>
                 </div>
 
-                <input type="submit" value="Создать"/>
+                <input type="submit" value="Создать" style="margin-bottom:20px"/>
                 
             </form>
         </div>
@@ -71,35 +72,35 @@
             <form asp-action="RoomJoin" asp-controller="Home" asp-antiforgery="true" method="post">
                 <br />
 
-                <h4 style="margin-bottom: 40px;">
+                <h4 style="margin-bottom: 10px;">
                     Присоединение к комнате
                 </h4>
 
-                <div style="margin-bottom: 25px;">
+                <div style="margin-bottom: 30px;">
                     @Html.Label("Имя")
                     <p>
-                        @Html.TextBox("Name")
+                        <input type="text" name="Name" />
                     </p>
                 </div>
 
-                <div style="margin-bottom: 25px;">
+                <div style="margin-bottom: 30px;">
 
                     @Html.Label("Id комнаты")
                     <p>
-                        @Html.TextBox("RoomId")
+                        <input type="text" name="RoomId" />
                     </p>
                 </div>
 
-                <div style="margin-bottom: 15px;">
+                <div style="margin-bottom: 35px;">
                     @Html.Label("Пароль")
                     <p>
-                        @Html.TextBox("Password")
+                        <input type="text" name="Password" />
                     </p>
                 </div>
 
                 <br />
 
-                <input type="submit" value="Присоедниться"/>
+                <input type="submit" value="Присоедниться" style="margin-bottom:20px"/>
                 </form>
         </div>
     </div>

@@ -18,116 +18,100 @@ namespace PlanningPoker.Controllers
 
 
         [HttpPost]
-        public IActionResult RoomCreate(string Name, string RoomTitle, int CardsType, string Password)
+        public IActionResult RoomCreate(CreateModel Created)
         {
             // Creation of ScrumPoker room
-            try
-            {
-                if (Name is null)
-                    throw new ArgumentNullException("Name");
-                if (RoomTitle is null)
-                    throw new ArgumentNullException("RoomTitle");
-                if (Password is null)
-                    throw new ArgumentNullException("Password");
-
-                using (var _context = new PokerPlanningContext())
+                if (ModelState.IsValid)
                 {
-                    var NewRoom = new PokerRoom()
+                    using (var _context = new PokerPlanningContext())
                     {
-                        Title = RoomTitle,
-                        Description = "",
-                        Password = Password,
-                        CreateDate = DateTime.Now,
-                        CloseDate = null,
-                        TypeCards = CardsType
-                    };
+                        var NewRoom = new PokerRoom()
+                        {
+                            Title = Created.RoomTitle,
+                            Description = "",
+                            Password = Created.Password,
+                            CreateDate = DateTime.Now,
+                            CloseDate = null,
+                            TypeCards = Created.CardsType
+                        };
 
-                    _context.Database.BeginTransaction();
+                        _context.Database.BeginTransaction();
 
-                    _context.PokerRooms.Add(NewRoom);
+                        _context.PokerRooms.Add(NewRoom);
 
-                    _context.SaveChanges();
+                        _context.SaveChanges();
 
-                    var NewPlayer = new Player()
-                    {
-                        Name = Name,
-                        Role = 2,
-                        PokerRoomId = NewRoom.Id,
-                        IsOnline = false
-                    };
+                        var NewPlayer = new Player()
+                        {
+                            Name = Created.Name,
+                            Role = 2,
+                            PokerRoomId = NewRoom.Id,
+                            IsOnline = false
+                        };
 
-                    _context.Players.Add(NewPlayer);
+                        _context.Players.Add(NewPlayer);
 
-                    _context.SaveChanges();
+                        _context.SaveChanges();
 
-                    _context.Database.CommitTransaction();
+                        _context.Database.CommitTransaction();
+                    }
+                    return RedirectToAction("Index"); //Сделать: переход в комнату
                 }
-                return RedirectToAction("Index"); //Сделать: переход в комнату
-            }
-            catch (ArgumentNullException)
-            {
-                return new BadRequestResult();//Сделать: Отправка в форму, что не введено;
-            }
+                else
+                    return View(Created);
         }
 
 
         [HttpPost]
-        public IActionResult RoomJoin(string Name, int RoomId, string Password)
+        public IActionResult RoomJoin(JoinModel Joined)
         {
             // Joining to ScrumPoker room
-            try
+            if (ModelState.IsValid)
             {
-                if (Name is null)
-                    throw new ArgumentNullException("Name");
-                if (RoomId < 1)
-                    throw new ArgumentException("Неверный айди комнаты","RoomId");
-                if (Password is null)
-                    throw new ArgumentNullException("Password");
-
-
-                using (var _context = new PokerPlanningContext())
+                try
                 {
-                    var Room = _context.PokerRooms.Where(m => m.Id == RoomId).SingleOrDefault();
-
-                    if (string.Compare(Room.Password, Password) == 0)//Проверка пароля, регистр важен
+                    using (var _context = new PokerPlanningContext())
                     {
-                        var NewPlayer = new Player()
-                        {
-                            Name = Name,
-                            Role = 1,
-                            PokerRoomId = RoomId,
-                            IsOnline = false
-                        };
+                        var Room = _context.PokerRooms.Where(m => m.Id == Joined.RoomId).SingleOrDefault();
 
-                        var Checker = _context.Players
-                            .Where(m => m.PokerRoomId == NewPlayer.PokerRoomId
-                            && string.Compare(NewPlayer.Name, m.Name, true) == 0).ToList().Count;
-
-                        if (Checker == 0)//Создать нового пользователя
+                        if (string.Compare(Room.Password, Joined.Password) == 0)//Проверка пароля, регистр важен
                         {
-                            _context.Players.Add(NewPlayer);
-                            _context.SaveChanges();
-                            return RedirectToAction("Index");//Сделать: переход в комнату
+                            var NewPlayer = new Player()
+                            {
+                                Name = Joined.Name,
+                                Role = 1,
+                                PokerRoomId = Joined.RoomId.Value,
+                                IsOnline = false
+                            };
+
+                            var Checker = _context.Players
+                                .Where(m => m.PokerRoomId == NewPlayer.PokerRoomId
+                                && string.Compare(NewPlayer.Name, m.Name, true) == 0).ToList().Count;
+
+                            if (Checker == 0)//Создать нового пользователя
+                            {
+                                _context.Players.Add(NewPlayer);
+                                _context.SaveChanges();
+                                return RedirectToAction("Index");//Сделать: переход в комнату
+                            }
+                            else //Такой пользователь уже есть, зайти под ним
+                                return RedirectToAction("Index");//Сделать: переход в комнату
                         }
-                        else //Такой пользователь уже есть, зайти под ним
-                            return RedirectToAction("Index");//Сделать: переход в комнату
+                        else
+                        {
+                            ModelState.AddModelError("Password", "Неверный пароль");
+                            return View(Joined);
+                        } 
                     }
-                    else//Неверный пароль
-                        return new BadRequestResult(); //Реализовать вывод в форму сообщения о неверности пароля.
+                }
+                catch (NullReferenceException)
+                {
+                    ModelState.AddModelError("RoomId", "Неверный ID Комнаты");
+                    return View(Joined);
                 }
             }
-            catch (NullReferenceException)//Такой комнаты нет
-            {
-                return new BadRequestResult();
-            }
-            catch (ArgumentNullException)//Не заполнено поле Сделать: Отправка в форму, что не введено;
-            {
-                return new BadRequestResult();
-            }
-            catch (ArgumentException)//Неверный RoomId(Меньше 1)
-            {
-                return new BadRequestResult();
-            }
+            else
+                return View(Joined);
         }
 
         [HttpGet("Info")]

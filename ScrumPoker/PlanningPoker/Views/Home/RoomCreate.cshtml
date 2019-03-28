@@ -1,0 +1,69 @@
+﻿@model PlanningPoker.Models.CreateModel
+@{
+    ViewData["Title"] = "RoomCreate";
+}
+<style>
+    .CreateForm {
+        border-radius: 1em;
+        padding: 1em;
+        position: absolute;
+        top: 40%;
+        left: 50%;
+        width: 400px;
+        height: 500px;
+        margin-right: -50%;
+        transform: translate(-50%, -50%);
+        border: 1px solid;
+        border-color: cadetblue;
+        background-color: aliceblue;
+        text-align: center;
+        margin-bottom: 50px;
+    }
+</style>
+<div class="CreateForm">
+    <h4>Создание комнаты</h4>
+
+    <form asp-action="RoomCreate" asp-controller="Home" asp-antiforgery="true" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <br />
+
+            <div style="margin-bottom: 15px;">
+                <label asp-for="Name"></label>
+                <br />
+                <input type="text" asp-for="Name" />
+                <p><span asp-validation-for="Name" class="text-danger"></span></p>
+
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <label asp-for="RoomTitle"></label>
+                <br />
+                <input type="text" asp-for="RoomTitle" />
+                <p><span asp-validation-for="RoomTitle" class="text-danger"></span></p>
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <label asp-for="Password"></label>
+                <br />
+                <input type="text" asp-for="Password" />
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <label asp-for="CardsType"></label>
+                <br />
+                <select name="CardsType" asp-for="CardsType" style="font-size:12px;">
+                    <option value=1>1,2,3,5,8,13,20,40,100,∞,?,CC</option>
+                    <option value=2>1,2,3,5,8,13,20,40,?</option>
+                    <option value=3>XS,S,M,L,XL,XXL,?</option>
+                    <option value=4>1,2,5,10,20,50,100</option>
+                </select>
+            </div>
+        </div>
+        <input type="submit" value="Создать" />
+
+    </form>
+</div>
+    @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }
