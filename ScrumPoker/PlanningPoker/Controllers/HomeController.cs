@@ -23,6 +23,9 @@ namespace PlanningPoker.Controllers
             // Creation of ScrumPoker room
             try
             {
+                PokerRoom NewRoom;
+                Player NewPlayer;
+
                 if (Name is null)
                     throw new ArgumentNullException("Name");
                 if (RoomTitle is null)
@@ -32,7 +35,7 @@ namespace PlanningPoker.Controllers
 
                 using (var _context = new PokerPlanningContext())
                 {
-                    var NewRoom = new PokerRoom()
+                    NewRoom = new PokerRoom()
                     {
                         Title = RoomTitle,
                         Description = "",
@@ -48,7 +51,7 @@ namespace PlanningPoker.Controllers
 
                     _context.SaveChanges();
 
-                    var NewPlayer = new Player()
+                   NewPlayer = new Player()
                     {
                         Name = Name,
                         Role = 2,
@@ -62,7 +65,7 @@ namespace PlanningPoker.Controllers
 
                     _context.Database.CommitTransaction();
                 }
-                return RedirectToAction("Index"); //Сделать: переход в комнату
+                return RedirectToAction("RoomEntrance", new { PokerRoomId = NewRoom.Id, PlayerId = NewPlayer.Id }); //Сделать: переход в комнату
             }
             catch (ArgumentNullException)
             {
@@ -107,10 +110,10 @@ namespace PlanningPoker.Controllers
                         {
                             _context.Players.Add(NewPlayer);
                             _context.SaveChanges();
-                            return RedirectToAction("Index");//Сделать: переход в комнату
+                            return RedirectToAction("RoomEntrance", new { PokerRoomId = Room.Id, PlayerId = NewPlayer.Id });//Сделать: переход в комнату
                         }
                         else //Такой пользователь уже есть, зайти под ним
-                            return RedirectToAction("Index");//Сделать: переход в комнату
+                            return RedirectToAction("RoomEntrance", new { PokerRoomId = Room.Id, PlayerId = NewPlayer.Id });//Сделать: переход в комнату
                     }
                     else//Неверный пароль
                         return new BadRequestResult(); //Реализовать вывод в форму сообщения о неверности пароля.
@@ -158,5 +161,82 @@ namespace PlanningPoker.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        [HttpGet]
+        public IActionResult RoomEntrance(int PokerRoomId, int PlayerId)
+        {
+            ViewBag.PokerRoomId = PokerRoomId;
+            using (var _context = new PokerPlanningContext())
+            {
+                var player = _context.Players.Where(p => p.Id == PlayerId).SingleOrDefault();
+
+                try
+                {
+                    player.IsOnline = true;
+                    _context.Players.Update(player);
+                    _context.SaveChanges();
+                }
+                catch (NullReferenceException)
+                {
+                    return new BadRequestResult();
+                }
+
+                List<Topic> topics = _context.Topics.Where(t => t.PokerRoomId == PokerRoomId).ToList();
+
+                ViewBag.NamePlayer = player.Name;
+                ViewBag.PlayerId = player.Id;
+
+                return View(topics);
+            }
+        }
+
+        [HttpPost]
+        public IActionResult TopicCreate(int PokerRoomId, int PlayerId, string Title, string Description)
+        {
+            try
+            {
+                using (var _context = new PokerPlanningContext())
+                {
+                    var Topic = new Topic
+                    {
+                        Title = Title,
+                        Description = Description,
+                        Status = 1, // не обсуждается
+                        PokerRoomId = PokerRoomId
+                    };
+
+                    _context.Topics.Add(Topic);
+                    _context.SaveChanges();
+                }
+            }
+            catch (ArgumentNullException)
+            {
+                return new BadRequestResult();//Сделать: Отправка в форму, что не введено;
+            }
+            return RedirectToAction("RoomEntrance", new { PokerRoomId, PlayerId });
+        }
+
+        [HttpPost]
+        public IActionResult RoomEntrance(int PokerRoomId, int PlayerId, int IdTopic)
+        {
+            try
+            {
+                using (var _context = new PokerPlanningContext())
+                {
+                    var Topic = new Topic();
+                    Topic = _context.Topics.Where(t => t.Id == IdTopic).SingleOrDefault();
+
+                    _context.Topics.Update(Topic);
+                    _context.SaveChanges();
+                }
+            }
+            catch (ArgumentNullException)
+            {
+                return new BadRequestResult();//Сделать: Отправка в форму, что не введено;
+            }
+            return RedirectToAction("RoomEntrance", new { PokerRoomId, PlayerId });
+        }
+
+
     }
 }

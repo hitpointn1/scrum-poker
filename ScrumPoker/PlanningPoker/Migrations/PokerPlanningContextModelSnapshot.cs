@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using PlanningPoker;
+using PlanningPoker.Models;
 
 namespace PlanningPoker.Migrations
 {
@@ -119,7 +119,7 @@ namespace PlanningPoker.Migrations
 
                     b.Property<string>("Description");
 
-                    b.Property<int>("Marks");
+                    b.Property<string>("Marks");
 
                     b.Property<int>("PokerRoomId");
 

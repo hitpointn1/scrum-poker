@@ -5,14 +5,13 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using PlanningPoker;
 using PlanningPoker.Models;
 
 namespace PlanningPoker.Migrations
 {
     [DbContext(typeof(PokerPlanningContext))]
-    [Migration("20190324184722_Nullables_and_IsOnline")]
-    partial class Nullables_and_IsOnline
+    [Migration("20190331125636_ChangeMarksInTopics")]
+    partial class ChangeMarksInTopics
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -122,7 +121,7 @@ namespace PlanningPoker.Migrations
 
                     b.Property<string>("Description");
 
-                    b.Property<int>("Marks");
+                    b.Property<string>("Marks");
 
                     b.Property<int>("PokerRoomId");
 
