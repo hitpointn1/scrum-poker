@@ -21,44 +21,51 @@ namespace PlanningPoker.Controllers
         public IActionResult RoomCreate(CreateModel Created)
         {
             // Creation of ScrumPoker room
-                if (ModelState.IsValid)
+            if (ModelState.IsValid)
+            {
+                using (var _context = new PokerPlanningContext())
                 {
-                    using (var _context = new PokerPlanningContext())
+                    var NewRoom = new PokerRoom()
                     {
-                        var NewRoom = new PokerRoom()
+                        Title = Created.RoomTitle,
+                        Description = "",
+                        Password = Created.Password.GetHashCode().ToString(),
+                        CreateDate = DateTime.Now,
+                        CloseDate = null,
+                        TypeCards = Created.CardsType
+                    };
+                    using (var transaction = _context.Database.BeginTransaction())
+                    {
+                        try
                         {
-                            Title = Created.RoomTitle,
-                            Description = "",
-                            Password = Created.Password,
-                            CreateDate = DateTime.Now,
-                            CloseDate = null,
-                            TypeCards = Created.CardsType
-                        };
+                            _context.PokerRooms.Add(NewRoom);
 
-                        _context.Database.BeginTransaction();
+                            _context.SaveChanges();
 
-                        _context.PokerRooms.Add(NewRoom);
+                            var NewPlayer = new Player()
+                            {
+                                Name = Created.Name,
+                                Role = 2,
+                                PokerRoomId = NewRoom.Id,
+                                IsOnline = false
+                            };
 
-                        _context.SaveChanges();
+                            _context.Players.Add(NewPlayer);
 
-                        var NewPlayer = new Player()
+                            _context.SaveChanges();
+
+                            transaction.Commit();
+                        }
+                        catch(Exception)
                         {
-                            Name = Created.Name,
-                            Role = 2,
-                            PokerRoomId = NewRoom.Id,
-                            IsOnline = false
-                        };
-
-                        _context.Players.Add(NewPlayer);
-
-                        _context.SaveChanges();
-
-                        _context.Database.CommitTransaction();
+                            transaction.Rollback();
+                        }
                     }
-                    return RedirectToAction("Index"); //Сделать: переход в комнату
                 }
-                else
-                    return View(Created);
+                return RedirectToAction("Index"); //Сделать: переход в комнату
+            }
+            else
+                return View(Created);
         }
 
 
@@ -74,7 +81,7 @@ namespace PlanningPoker.Controllers
                     {
                         var Room = _context.PokerRooms.Where(m => m.Id == Joined.RoomId).SingleOrDefault();
 
-                        if (string.Compare(Room.Password, Joined.Password) == 0)//Проверка пароля, регистр важен
+                        if (string.Compare(Room.Password, Joined.Password.GetHashCode().ToString()) == 0)//Проверка пароля, регистр важен// Сделать миграцию, где пароль - int для хранения hash()
                         {
                             var NewPlayer = new Player()
                             {

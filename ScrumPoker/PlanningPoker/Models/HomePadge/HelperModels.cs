@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Data;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace PlanningPoker.Models
 {
@@ -20,6 +15,7 @@ namespace PlanningPoker.Models
             this.Count = Count;
         }
     }
+  
     public class CreateModel
     {
         [Required(ErrorMessage = "Не задано имя ведущего")]
