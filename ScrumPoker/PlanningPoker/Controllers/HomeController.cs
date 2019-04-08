@@ -27,18 +27,22 @@ namespace PlanningPoker.Controllers
         [HttpPost("Create")]
         public IActionResult RoomCreate(CreateModel Created)
         {
-            if (Created.Password is null)
-                Created.Password = String.Empty;
             // Creation of ScrumPoker room
             if (ModelState.IsValid)
             {
+                int? _nullablepassword;
                 using (var _context = new PokerPlanningContext())
                 {
+                    if (Created.Password is null)
+                        _nullablepassword = null;
+                    else
+                        _nullablepassword = Created.Password.GetHashCode();
+
                     var NewRoom = new PokerRoom()
                     {
                         Title = Created.RoomTitle,
                         Description = "",
-                        Password = Created.Password.GetHashCode(),
+                        Password = _nullablepassword,
                         CreateDate = DateTime.Now,
                         CloseDate = null,
                         TypeCards = Created.CardsType
@@ -58,7 +62,7 @@ namespace PlanningPoker.Controllers
                     _context.Players.Add(NewPlayer);
                     _context.SaveChanges();
 
-                    return RedirectToAction("RoomEntrance", new { PokerRoomId = NewRoom.Id, PlayerId = NewPlayer.Id }); //Сделать: переход в комнату
+                    return RedirectToAction("RoomEntrance", new { PokerRoomId = NewRoom.Id, PlayerId = NewPlayer.Id }); //переход в комнату
                 }
                 
             }
@@ -70,17 +74,23 @@ namespace PlanningPoker.Controllers
         [HttpPost("Join")]
         public IActionResult RoomJoin(JoinModel Joined)
         {
-            if (Joined.Password is null) Joined.Password = String.Empty;
+            
+            
             // Joining to ScrumPoker room
             if (ModelState.IsValid)
             {
+                int? _nullablepassword;
                 try
                 {
                     using (var _context = new PokerPlanningContext())
                     {
+                        if (Joined.Password is null)
+                            _nullablepassword = null;
+                        else
+                            _nullablepassword = Joined.Password.GetHashCode();
                         var Room = _context.PokerRooms.Where(m => m.Id == Joined.RoomId).SingleOrDefault();
 
-                        if (Equals(Room.Password, Joined.Password.GetHashCode()))//Проверка пароля, регистр важен// Сделать миграцию, где пароль - int для хранения hash()
+                        if (Equals(Room.Password, _nullablepassword))//Проверка пароля, регистр важен
                         {
                             var NewPlayer = new Player()
                             {
@@ -98,13 +108,13 @@ namespace PlanningPoker.Controllers
                             {
                                 _context.Players.Add(NewPlayer);
                                 _context.SaveChanges();
-                                return RedirectToAction("RoomDiscussion", new { PokerRoomId = Room.Id, PlayerId = NewPlayer.Id });//Сделать: переход в комнату
+                                return RedirectToAction("RoomDiscussion", new { PokerRoomId = Room.Id, PlayerId = NewPlayer.Id });//переход в комнату
                             }
                             else //Такой пользователь уже есть, зайти под ним
                             { 
                                 var player = _context.Players.Where(p => p.PokerRoomId == Joined.RoomId && p.Name == NewPlayer.Name).SingleOrDefault();
                                 if (player.Role == 2)
-                                    return RedirectToAction("RoomEntrance", new { PokerRoomId = Room.Id, PlayerId = player.Id });//Сделать: переход в комнату
+                                    return RedirectToAction("RoomEntrance", new { PokerRoomId = Room.Id, PlayerId = player.Id });//переход в комнату
                                 else
                                     return RedirectToAction("RoomDiscussion", new { PokerRoomId = Room.Id, PlayerId = player.Id });
                             }
