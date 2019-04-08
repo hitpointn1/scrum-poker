@@ -31,7 +31,7 @@ namespace PlanningPoker
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-
+            services.AddSignalR();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
@@ -59,6 +59,12 @@ namespace PlanningPoker
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<VotingHub>("/chat");
+            });
+            
         }
     }
 }

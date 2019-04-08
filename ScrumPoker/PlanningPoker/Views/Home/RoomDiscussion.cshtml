@@ -1,15 +1,22 @@
-﻿
+﻿@model List<string>
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<!DOCTYPE html>
-
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>RoomDiscussion</title>
-</head>
-<body>
-</body>
-</html>
+<p class="roomName">Комната: @ViewBag.PokerRoomId  - @ViewBag.NamePlayer</p>
+@if (ViewBag.countTopicDiscussion != 0)
+{
+    <div class="topicDiscussion">
+        <p>Задача: @ViewBag.Title</p>
+        <p>Описание: @ViewBag.Title</p>
+    </div>
+    @using (Html.BeginForm("GetResultVote", "Home", FormMethod.Post)) /*добавить метод обработки */
+    {
+        <div class="valueTopic">
+            @foreach (var value in Model)
+            {
+                <input type="submit" class="topicDiscussionBTN" value=@value />
+            }
+        </div>
+    }
+}

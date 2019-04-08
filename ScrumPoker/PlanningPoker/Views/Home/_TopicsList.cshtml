@@ -20,11 +20,13 @@
     <tbody>
         @foreach (var item in Model)
         {
-            @using (Html.BeginForm("RoomEntrance", "Home", FormMethod.Post))
+            @using (Html.BeginForm("StartVoting", "Home", FormMethod.Post))
             {
                 <tr>
                     <td>
                         <input id="IdTopic" name="IdTopic" type="hidden" value=@item.Id />
+                        <input id="PokerRoomId" name="PokerRoomId" type="hidden" value=@ViewBag.PokerRoomId />
+                        <input id="PlayerId" name="PlayerId" type="hidden" value=@ViewBag.PlayerId />
                         @if (item.Status == 1)
                         {
                             <input type="submit" class="topicBTN" value="Старт" />
@@ -48,7 +50,8 @@
                         <a asp-action="DeleteTopic" asp-route-id="@item.Id">Удалить</a>
                     </td>
                 </tr>
+
             }
         }
-    </tbody>
+        </tbody>
 </table>

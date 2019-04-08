@@ -54,7 +54,7 @@ body {
   height: 60px;
   line-height: 60px; /* Vertically center the text there */
 }
-.deleteRoom p {
+.roomName {
     display: inline-block;
     font-size: 18px;
     font-style: italic;
@@ -139,4 +139,16 @@ body {
         border-right: 1px solid #e0e0e0;
         word-wrap: break-word;
     }
+
+.topicDiscussionBTN {
+    background: #65a5e2;
+    box-shadow: 0 0 10px #01315f;
+    background: linear-gradient(to top, #65a5e2 0%, #01315f 36%, #003490 100%);
+    font-size: 24px; /* Размер шрифта */
+    padding: 25px 20px; /* Поля вокруг текста */
+    color: #fff; /* Цвет текста */
+    border: 1px solid #003490; /* Параметры рамки */
+    border-radius: 10px; /* Радиус скругления */
+    margin: 5px;
+}
 

@@ -4,12 +4,19 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using PlanningPoker.Models;
 
 namespace PlanningPoker.Controllers
 {
     public class HomeController : Controller
     {
+        IHubContext<VotingHub> hubContext;
+        public HomeController(IHubContext<VotingHub> hubContext)
+        {
+            this.hubContext = hubContext;
+        }
+
         [HttpGet]
         public IActionResult Index()
         {
@@ -110,10 +117,16 @@ namespace PlanningPoker.Controllers
                         {
                             _context.Players.Add(NewPlayer);
                             _context.SaveChanges();
-                            return RedirectToAction("RoomEntrance", new { PokerRoomId = Room.Id, PlayerId = NewPlayer.Id });//Сделать: переход в комнату
+                            return RedirectToAction("RoomDiscussion", new { PokerRoomId = Room.Id, PlayerId = NewPlayer.Id });//Сделать: переход в комнату
                         }
-                        else //Такой пользователь уже есть, зайти под ним
-                            return RedirectToAction("RoomEntrance", new { PokerRoomId = Room.Id, PlayerId = NewPlayer.Id });//Сделать: переход в комнату
+                        else
+                        { //Такой пользователь уже есть, зайти под ним
+                            var player = _context.Players.Where(p => p.PokerRoomId == RoomId && p.Name == NewPlayer.Name).SingleOrDefault();
+                            if(player.Role == 2)
+                                return RedirectToAction("RoomEntrance", new { PokerRoomId = Room.Id, PlayerId = player.Id });//Сделать: переход в комнату
+                            else
+                                return RedirectToAction("RoomDiscussion", new { PokerRoomId = Room.Id, PlayerId = player.Id });
+                        }
                     }
                     else//Неверный пароль
                         return new BadRequestResult(); //Реализовать вывод в форму сообщения о неверности пароля.
@@ -163,6 +176,7 @@ namespace PlanningPoker.Controllers
         }
 
         [HttpGet]
+        // Вход в комнату для создателя комнаты.
         public IActionResult RoomEntrance(int PokerRoomId, int PlayerId)
         {
             ViewBag.PokerRoomId = PokerRoomId;
@@ -191,6 +205,7 @@ namespace PlanningPoker.Controllers
         }
 
         [HttpPost]
+        // Создание задачи для голосовани.
         public IActionResult TopicCreate(int PokerRoomId, int PlayerId, string Title, string Description)
         {
             try
@@ -217,7 +232,8 @@ namespace PlanningPoker.Controllers
         }
 
         [HttpPost]
-        public IActionResult RoomEntrance(int PokerRoomId, int PlayerId, int IdTopic)
+        // Старт или стоп обсуждения задачи.
+        public IActionResult StartVoting(int PokerRoomId, int PlayerId, int IdTopic)
         {
             try
             {
@@ -226,7 +242,22 @@ namespace PlanningPoker.Controllers
                     var Topic = new Topic();
                     Topic = _context.Topics.Where(t => t.Id == IdTopic).SingleOrDefault();
 
-                    _context.Topics.Update(Topic);
+                    var countTopicStart = _context.Topics.Where(t => t.PokerRoomId == PokerRoomId && t.Status == 2)
+                        .ToList().Count;
+
+                    if (Topic.Status == 1 &&  countTopicStart == 0)//если голосование необходимо запустить
+                    {
+                        Topic.Status = 2; // старт голосования
+                    }
+                    else if(Topic.Status == 2 && countTopicStart == 1)
+                    {
+                        Topic.Status = 1; // стоп голосования
+                    }
+                    else
+                    {
+                        //предупреждение
+                    }
+                     _context.Topics.Update(Topic);
                     _context.SaveChanges();
                 }
             }
@@ -237,6 +268,70 @@ namespace PlanningPoker.Controllers
             return RedirectToAction("RoomEntrance", new { PokerRoomId, PlayerId });
         }
 
+        [HttpGet]
+        //Комната обсуждения задачи.
+        public IActionResult RoomDiscussion(int PokerRoomId, int PlayerId) //SignalR настроить
+        {
+            ViewBag.PokerRoomId = PokerRoomId;
+
+            List<string> valueCards = new List<string>();
+
+            using (var _context = new PokerPlanningContext())
+            {
+                var player = _context.Players.Where(p => p.Id == PlayerId).SingleOrDefault();
+
+                var typeCards = _context.PokerRooms.Where(p => p.Id == PokerRoomId).SingleOrDefault().TypeCards;
+
+                string stringValueCards = "";
+
+                switch (typeCards)
+                {
+                    case 1:
+                        stringValueCards = "1,2,3,5,8,13,20,40,100,∞,?,CC";
+                        break;
+                    case 2:
+                        stringValueCards = "1,2,3,5,8,13,20,40,?";
+                        break;
+                    case 3:
+                        stringValueCards = "XS,S,M,L,XL,XXL,?";
+                        break;
+                    case 4:
+                        stringValueCards = "1,2,5,10,20,50,100";
+                        break;
+                }
+
+
+                valueCards = stringValueCards.Split(new char[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+
+                var TopicDiscussion = _context.Topics.Where(t => t.PokerRoomId == PokerRoomId && t.Status == 2);
+                var countTopicDiscussion = TopicDiscussion.ToList().Count;
+
+                //Если тема обсуждается
+                if (countTopicDiscussion != 0)
+                {
+                    ViewBag.CountTopicDiscussion = countTopicDiscussion;
+                    ViewBag.Title = TopicDiscussion.SingleOrDefault().Title;
+                    ViewBag.Description = TopicDiscussion.SingleOrDefault().Description;
+                }
+
+                try
+                {
+                    player.IsOnline = true;
+                    _context.Players.Update(player);
+                    _context.SaveChanges();
+                }
+                catch (NullReferenceException)
+                {
+                    return new BadRequestResult();
+                }
+
+
+                ViewBag.NamePlayer = player.Name;
+                ViewBag.PlayerId = player.Id;
+
+                return View(valueCards);
+            }
+        }
 
     }
 }

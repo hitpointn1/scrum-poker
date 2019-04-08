@@ -7,9 +7,10 @@
 {
     <div class="deleteRoom">
         <input type="submit" class="deleteBTN" value="Удалить" />
-        <p>Комната: @ViewBag.PokerRoomId  - @ViewBag.NamePlayer</p>
+        <p class="roomName">Комната: @ViewBag.PokerRoomId  - @ViewBag.NamePlayer</p>
     </div>
 }
+
 
 @using (Html.BeginForm("TopicCreate", "Home", FormMethod.Post))
 {
@@ -26,11 +27,15 @@
             <br />
             @Html.TextArea("Description")
         </div>
-
         <input id="PokerRoomId" name="PokerRoomId" type="hidden" value=@ViewBag.PokerRoomId />
         <input id="PlayerId" name="PlayerId" type="hidden" value=@ViewBag.PlayerId />
         <input type="submit" class="topicBTN" value="Добавить" />
     </div>
 }
-@if (Model.Count() != 0)
-    {await Html.RenderPartialAsync("_TopicsList", Model);}
+
+
+    @if (Model.Count() != 0)
+     {
+            await Html.RenderPartialAsync("_TopicsList", Model);
+     }
+
