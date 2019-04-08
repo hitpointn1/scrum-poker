@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System;
 
 namespace PlanningPoker.Models
 {
@@ -40,7 +41,7 @@ namespace PlanningPoker.Models
         public string Name { get; set; }
 
         [Required(ErrorMessage = "Поле ID комнаты не заполнено")]
-        [Range(0,double.MaxValue, ErrorMessage ="Неверный ID комнаты")]
+        [Range(0,int.MaxValue, ErrorMessage ="Неверный ID комнаты")]
         [Display(Name = "ID комнаты")]
         public int? RoomId { get; set; }
 

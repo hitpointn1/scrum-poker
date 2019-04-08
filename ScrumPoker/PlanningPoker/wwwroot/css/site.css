@@ -54,3 +54,101 @@ body {
   height: 60px;
   line-height: 60px; /* Vertically center the text there */
 }
+.roomName {
+    display: inline-block;
+    font-size: 18px;
+    font-style: italic;
+    font-weight: 700;
+}
+
+.deleteBTN {
+    background: #65a5e2;
+    box-shadow: 0 0 7px #01315f;
+    background: linear-gradient(to top, #65a5e2 0%, #01315f 36%, #003490 100%);
+    font-size: 16px; /* Размер шрифта */
+    padding: 7px 15px; /* Поля вокруг текста */
+    color: #fff; /* Цвет текста */
+    border: 1px solid #003490; /* Параметры рамки */
+    border-radius: 10px; /* Радиус скругления */
+}
+.topicCreate {
+    box-shadow: 0 0 10px cadetblue;
+    border: 1px solid;
+    border-color: cadetblue;
+    background-color: aliceblue;
+    margin-top: 20px;
+    margin-bottom: 30px;
+    text-align: center;
+    padding: 25px;
+    width: 400px;
+}
+
+.topicField input {
+    box-shadow: 0 0 3px cadetblue;
+    padding-top: 5px;
+    width: 80%;
+}
+
+.topicField label {
+    padding-top: 5px;
+    width: 80%;
+    font-weight: 500;
+}
+
+.topicField textarea {
+    box-shadow: 0 0 3px cadetblue;
+    width: 80%;
+    height: 80px;
+}
+
+.topicBTN {
+    background: aliceblue;
+    box-shadow: 0 0 7px cadetblue;
+    background: linear-gradient(to top, aliceblue 0%, cadetblue 36%, aliceblue 100%);
+    font-size: 16px; /* Размер шрифта */
+    padding: 7px 15px; /* Поля вокруг текста */
+    margin-top: 7px;
+    color: #fff;
+    border: 1px solid cadetblue; /* Параметры рамки */
+    border-radius: 3px; /* Радиус скругления */
+}
+
+.topicTable {
+    table-layout: fixed;
+    width: 90%;
+    border: 1px solid cadetblue;
+    background: aliceblue;
+    border-radius: 5px;
+    margin-top: 20px;
+    box-shadow: 0 0 7px cadetblue;
+}
+
+    .topicTable th, td {
+        padding: 18px 28px 18px;
+        text-align: center;
+    }
+
+    .topicTable th {
+        padding-top: 22px;
+        background: cadetblue;
+        color: #fff;
+    }
+
+    .topicTable td {
+        border-top: 1px solid #e0e0e0;
+        border-right: 1px solid #e0e0e0;
+        word-wrap: break-word;
+    }
+
+.topicDiscussionBTN {
+    background: #65a5e2;
+    box-shadow: 0 0 10px #01315f;
+    background: linear-gradient(to top, #65a5e2 0%, #01315f 36%, #003490 100%);
+    font-size: 24px; /* Размер шрифта */
+    padding: 25px 20px; /* Поля вокруг текста */
+    color: #fff; /* Цвет текста */
+    border: 1px solid #003490; /* Параметры рамки */
+    border-radius: 10px; /* Радиус скругления */
+    margin: 5px;
+}
+
