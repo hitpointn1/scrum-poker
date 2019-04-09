@@ -30,13 +30,11 @@ namespace PlanningPoker.Controllers
             // Creation of ScrumPoker room
             if (ModelState.IsValid)
             {
-                int? _nullablepassword;
+                int _nullablepassword;
                 using (var _context = new PokerPlanningContext())
                 {
-                    if (Created.Password is null)
-                        _nullablepassword = null;
-                    else
-                        _nullablepassword = Created.Password.GetHashCode();
+
+                    _nullablepassword = PasswordEncrypt.GetPassword(Created.Password);
 
                     var NewRoom = new PokerRoom()
                     {
@@ -47,7 +45,7 @@ namespace PlanningPoker.Controllers
                         CloseDate = null,
                         TypeCards = Created.CardsType
                     };
-                    
+
                     _context.PokerRooms.Add(NewRoom);
                     _context.SaveChanges();
 
@@ -64,12 +62,22 @@ namespace PlanningPoker.Controllers
 
                     return RedirectToAction("RoomEntrance", new { PokerRoomId = NewRoom.Id, PlayerId = NewPlayer.Id }); //переход в комнату
                 }
-                
+
             }
             else
                 return View(Created);
         }
 
+
+        [HttpGet("Join")]
+        public IActionResult RoomJoin(int Id)
+        {
+            var model = new JoinModel
+            {
+                RoomId = Id
+            };
+            return View(model);
+        }
 
         [HttpPost("Join")]
         public IActionResult RoomJoin(JoinModel Joined)
@@ -79,15 +87,12 @@ namespace PlanningPoker.Controllers
             // Joining to ScrumPoker room
             if (ModelState.IsValid)
             {
-                int? _nullablepassword;
+                int _nullablepassword;
                 try
                 {
                     using (var _context = new PokerPlanningContext())
                     {
-                        if (Joined.Password is null)
-                            _nullablepassword = null;
-                        else
-                            _nullablepassword = Joined.Password.GetHashCode();
+                            _nullablepassword = PasswordEncrypt.GetPassword(Joined.Password);
                         var Room = _context.PokerRooms.Where(m => m.Id == Joined.RoomId).SingleOrDefault();
 
                         if (Equals(Room.Password, _nullablepassword))//Проверка пароля, регистр важен
@@ -152,7 +157,7 @@ namespace PlanningPoker.Controllers
                 var Pcount = _context.Players.ToList();
 
                 var rooms = RList.GroupJoin(Pcount, R => R.Id, P => P.PokerRoomId, 
-                    (rl, pc) => new RoomListModel(rl.Id, rl.Title, pc.Count()))
+                    (rl, pc) => new RoomListModel(rl.Id, rl.Title, pc.Where(m =>m.IsOnline == true).Count()))
                     .ToList();
 
                 return View(rooms);

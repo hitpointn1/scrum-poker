@@ -151,4 +151,50 @@ body {
     border-radius: 10px; /* Радиус скругления */
     margin: 5px;
 }
-
+.JoinForm {
+    float: left;
+    border-radius: 1em;
+    padding: 1em;
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    width: 23%;
+    height: 55%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    border: 1px solid;
+    border-color: cadetblue;
+    background-color: aliceblue;
+    text-align: center;
+}
+.CreateForm {
+    float: left;
+    border-radius: 1em;
+    padding: 1em;
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    width: 23%;
+    height: 55%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    border: 1px solid;
+    border-color: cadetblue;
+    background-color: aliceblue;
+    text-align: center;
+}
+.SignForm {
+    float: left;
+    border-radius: 1em;
+    padding: 1em;
+    width: 400px;
+    height: 470px;
+    border: 1px solid;
+    border-color: cadetblue;
+    background-color: aliceblue;
+    text-align: center;
+    margin-bottom: 50px;
+}
+.InputForm {
+    box-shadow: 0 0 1px cadetblue;
+}
