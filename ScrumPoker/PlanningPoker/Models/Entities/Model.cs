@@ -52,7 +52,7 @@ namespace PlanningPoker
     {
         public int Id { get; set; }
         public string Comment { get; set; }
-        public int CardValue { get; set; }
+        public string CardValue { get; set; }
         public int IterationNumb { get; set; }
 
         public int PlayerId { get; set; }

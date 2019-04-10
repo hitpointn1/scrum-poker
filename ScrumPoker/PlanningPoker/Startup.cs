@@ -62,7 +62,7 @@ namespace PlanningPoker
 
             app.UseSignalR(routes =>
             {
-                routes.MapHub<VotingHub>("/chat");
+                routes.MapHub<VotingHub>("/ScrumRoom");
             });
             
         }

@@ -73,6 +73,7 @@ body {
 }
 .topicCreate {
     box-shadow: 0 0 10px cadetblue;
+    border-radius: 20px;
     border: 1px solid;
     border-color: cadetblue;
     background-color: aliceblue;
@@ -89,13 +90,13 @@ body {
     width: 80%;
 }
 
-.topicField label {
+.topicField label, .commentField label {
     padding-top: 5px;
     width: 80%;
     font-weight: 500;
 }
 
-.topicField textarea {
+.topicField textarea, .commentField textarea {
     box-shadow: 0 0 3px cadetblue;
     width: 80%;
     height: 80px;

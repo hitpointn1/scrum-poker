@@ -3,16 +3,17 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@using (Html.BeginForm("DeletePokerRoom", "Home", FormMethod.Post))
+@using (Html.BeginForm("DeletePokerRoom", "ScrumRoom", FormMethod.Post))
 {
     <div class="deleteRoom">
+        <input id="PokerRoomId" name="PokerRoomId" type="hidden" value=@ViewBag.PokerRoomId />
         <input type="submit" class="deleteBTN" value="Удалить" />
         <p class="roomName">Комната: @ViewBag.PokerRoomId  - @ViewBag.NamePlayer</p>
     </div>
 }
 
 
-@using (Html.BeginForm("TopicCreate", "Home", FormMethod.Post))
+@using (Html.BeginForm("TopicCreate", "ScrumRoom", FormMethod.Post))
 {
     <div class="topicCreate">
         <div class="topicField">
