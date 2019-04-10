@@ -1,0 +1,42 @@
+﻿@model PlanningPoker.Models.JoinModel
+@{
+    ViewData["Title"] = "RoomJoin";
+}
+        <div class="JoinForm">
+            <h4 style="margin-top:3%">Присоединение к комнате</h4>
+
+            <form asp-action="RoomJoin" asp-controller="Home" asp-antiforgery="true" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <br />
+
+                    <div style="margin-bottom: 8%;">
+                        <label asp-for="Name"></label>
+                        <br />
+                        <input type="text" asp-for="Name" class="InputForm"/>
+                        <p><span asp-validation-for="Name" class="text-danger"></span></p>
+                    </div>
+
+                    <div style="margin-bottom: 8%;">
+                        <label asp-for="RoomId"></label>
+                        <br />
+                        <input type="number" asp-for="RoomId" class="InputForm"/>
+                        <p><span asp-validation-for="RoomId" class="text-danger"></span></p>
+                    </div>
+
+                    <div style="margin-bottom: 5%;">
+                        <label asp-for="Password"></label>
+                        <br />
+                        <input type="password" asp-for="Password" class="InputForm"/>
+                        <p><span asp-validation-for="Password" class="text-danger"></span></p>
+                    </div>
+
+                    <br />
+
+                    <input type="submit" value="Присоединиться" class="topicBTN"/>
+                </div>
+            </form>
+        </div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

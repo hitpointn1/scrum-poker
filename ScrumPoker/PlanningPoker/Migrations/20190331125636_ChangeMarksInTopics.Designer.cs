@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PlanningPoker.Models;
 
 namespace PlanningPoker.Migrations
 {
     [DbContext(typeof(PokerPlanningContext))]
-    partial class PokerPlanningContextModelSnapshot : ModelSnapshot
+    [Migration("20190331125636_ChangeMarksInTopics")]
+    partial class ChangeMarksInTopics
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -100,7 +102,7 @@ namespace PlanningPoker.Migrations
 
                     b.Property<string>("Description");
 
-                    b.Property<int?>("Password");
+                    b.Property<string>("Password");
 
                     b.Property<string>("Title");
 
