@@ -28,14 +28,28 @@ namespace PlanningPoker.Controllers
             XXL
         }
 
-        //Вычисление оценки задачи
+        private string ConvertToString(int number)
+        {
+            string str = "-";
+            switch (number)
+            {
+                case 1: str = "XS"; break;
+                case 2: str = "S"; break;
+                case 3: str = "M"; break;
+                case 4: str = "L"; break;
+                case 5: str = "XL"; break;
+                case 6: str = "XXL"; break;
+            }
+            return str;
+        }
+
+        //Вычисление оценки задачи.
         private string ResultMarks(List<string> result, int TypeCards)
         {
-            double sum = 0;
-            int count = 0;
+            int min = 100;
+            int max = 0;
             int card;
 
-            int resultcard;
             switch(TypeCards)
             {
                 case 1:
@@ -43,151 +57,117 @@ namespace PlanningPoker.Controllers
                     {
                         if (int.TryParse(res, out card))
                         {
-                            sum += card;
-                            count++;
+                            if (min > card)
+                                min = card;
+                            if (max < card)
+                                max = card;
                         }
                     }
-                    if (count == 0)
-                        resultcard = 0;
-                    else
-                        resultcard = (int) Math.Ceiling(sum / count);
-
-                    if (resultcard < 1)
+                    if (min == 100 && max == 0)
                         return "-";
-                    else if (resultcard < 2)
-                        return "1";
-                    else if (resultcard < 3)
-                        return "2";
-                    else if (resultcard < 5)
-                        return "3";
-                    else if (resultcard < 8)
-                        return "5";
-                    else if (resultcard < 13)
-                        return "8";
-                    else if (resultcard < 20)
-                        return "13";
-                    else if (resultcard < 40)
-                        return "20";
-                    else if (resultcard < 100)
-                        return "40";
+                    else if (min == max)
+                        return $"{min}";
                     else
-                        return "100";
+                        return $"min = {min}; max = {max}";
+
                 case 2:
                     foreach (var res in result)
                     {
                         if (int.TryParse(res, out card))
                         {
-                            sum += card;
-                            count++;
+                            if (min > card)
+                                min = card;
+                            if (max < card)
+                                max = card;
                         }
                     }
-                    if (count == 0)
-                        resultcard = 0;
-                    else
-                        resultcard = (int)Math.Ceiling(sum / count);
-
-                    if (resultcard < 1)
+                    if (min == 100 && max == 0)
                         return "-";
-                    else if (resultcard < 2)
-                        return "1";
-                    else if (resultcard < 3)
-                        return "2";
-                    else if (resultcard < 5)
-                        return "3";
-                    else if (resultcard < 8)
-                        return "5";
-                    else if (resultcard < 13)
-                        return "8";
-                    else if (resultcard < 20)
-                        return "13";
-                    else if (resultcard < 40)
-                        return "20";
+                    else if (min == max)
+                        return $"{min}";
                     else
-                        return "40";
+                        return $"min = {min}; max = {max}";
 
                 case 3:
+                    min = 7;
+                    max = 0;
+                    string strmin, strmax;
                     foreach (var res in result)
                     {
                         switch (res)
                         {
                             case "XS":
-                                sum += (int)CharTypeCards.XS;
-                                count++;
+                                if (min > (int)CharTypeCards.XS)
+                                    min = (int)CharTypeCards.XS;
+                                if (max < (int)CharTypeCards.XS)
+                                    max = (int)CharTypeCards.XS;
                                 break;
                             case "S":
-                                sum += (int)CharTypeCards.S;
-                                count++;
+                                if (min > (int)CharTypeCards.S)
+                                    min = (int)CharTypeCards.S;
+                                if (max < (int)CharTypeCards.S)
+                                    max = (int)CharTypeCards.S;
                                 break;
                             case "M":
-                                sum += (int)CharTypeCards.M;
-                                count++;
+                                if (min > (int)CharTypeCards.M)
+                                    min = (int)CharTypeCards.M;
+                                if (max < (int)CharTypeCards.M)
+                                    max = (int)CharTypeCards.M;
                                 break;
                             case "L":
-                                sum += (int)CharTypeCards.L;
-                                count++;
+                                if (min > (int)CharTypeCards.L)
+                                    min = (int)CharTypeCards.L;
+                                if (max < (int)CharTypeCards.L)
+                                    max = (int)CharTypeCards.L;
                                 break;
                             case "XL":
-                                sum += (int)CharTypeCards.XL;
-                                count++;
+                                if (min > (int)CharTypeCards.XL)
+                                    min = (int)CharTypeCards.XL;
+                                if (max < (int)CharTypeCards.XL)
+                                    max = (int)CharTypeCards.XL;
                                 break;
                             case "XXL":
-                                sum += (int)CharTypeCards.XXL;
-                                count++;
+                                if (min > (int)CharTypeCards.XXL)
+                                    min = (int)CharTypeCards.XXL;
+                                if (max < (int)CharTypeCards.XXL)
+                                    max = (int)CharTypeCards.XXL;
                                 break;
                             default:
                                 break;
                         }
-
                     }
-                    if (count == 0)
-                        resultcard = 0;
-                    else
-                        resultcard = (int)Math.Ceiling(sum / count);
-
-                    if (resultcard < 1)
+                    if (min == 7 && max == 0)
+                    {
                         return "-";
-                    else if (resultcard < 2)
-                        return "XS";
-                    else if (resultcard < 3)
-                        return "S";
-                    else if (resultcard < 4)
-                        return "M";
-                    else if (resultcard < 5)
-                        return "L";
-                    else if (resultcard < 6)
-                        return "XL";
+                    }
+                    else if (min == max)
+                    {
+                        return $"{ConvertToString(min)}";
+                    }
                     else
-                        return "XXL";
+                    {
+                        return $"min = {ConvertToString(min)}; max = {ConvertToString(max)}";
+                    }
+                    
+
                 case 4:
                     foreach (var res in result)
                     {
                         if (int.TryParse(res, out card))
                         {
-                            sum += card;
-                            count++;
+                            if (min > card)
+                                min = card;
+                            if (max < card)
+                                max = card;
                         }
                     }
-                    if (count == 0)
-                        resultcard = 0;
-                    else
-                        resultcard = (int)Math.Ceiling(sum / count);
-
-                    if (resultcard < 1)
+                    if (min == 100 && max == 0)
                         return "-";
-                    else if (resultcard < 2)
-                        return "1";
-                    else if (resultcard < 5)
-                        return "2";
-                    else if (resultcard < 10)
-                        return "5";
-                    else if (resultcard < 20)
-                        return "10";
-                    else if (resultcard < 50)
-                        return "20";
-                    else if (resultcard < 100)
-                        return "50";
-                    else 
-                        return "100";
+                    else if (min == max)
+                        return $"{min}";
+                    else
+                        return $"min = {min}; max = {max}";
+
                 default:
                     return "Ошибка";
             }
@@ -197,7 +177,10 @@ namespace PlanningPoker.Controllers
         // Вход в комнату для создателя комнаты.
         public IActionResult RoomEntrance(int PokerRoomId, int PlayerId)
         {
+            Dictionary<string, (string, string)> resultCard = new Dictionary<string, (string, string)>();
+
             ViewBag.PokerRoomId = PokerRoomId;
+
             using (var _context = new PokerPlanningContext())
             {
                 var player = _context.Players.Where(p => p.Id == PlayerId).SingleOrDefault();
@@ -215,10 +198,25 @@ namespace PlanningPoker.Controllers
 
                 List<Topic> topics = _context.Topics.Where(t => t.PokerRoomId == PokerRoomId).ToList();
 
+                // Выбор карточек для отображения результатов голосования.
+                var Topic = _context.Topics.Where(t => t.PokerRoomId == PokerRoomId && t.Status == 2).SingleOrDefault();
+                if (Topic != null)
+                {
+                    var cards = _context.Cards.Where(c => c.TopicId == Topic.Id && c.IterationNumb == Topic.IterationNumb).ToList();
+                    if (cards != null)
+                    {
+                        foreach(var card in cards)
+                        { 
+                            var playerName = _context.Players.Where(p => p.Id == card.PlayerId).SingleOrDefault().Name;
+                            resultCard[playerName] = (card.CardValue, card.Comment);
+                        }
+                    }
+                }
+
                 ViewBag.NamePlayer = player.Name;
                 ViewBag.PlayerId = player.Id;
 
-                return View(topics);
+                return View((topics, resultCard));
             }
         }
 
@@ -410,6 +408,11 @@ namespace PlanningPoker.Controllers
   
         }
 
+        public IActionResult ResultVoting()
+        {
+            return PartialView();
+        }
+
         public async Task<IActionResult> GetResultVote(int PokerRoomId, int PlayerId, string ValueCard, int TopicId, string Comment)
         {
             using (var _context = new PokerPlanningContext())
@@ -439,7 +442,7 @@ namespace PlanningPoker.Controllers
                     //предупреждение
                 }
             }
-          //  await hubContext.Clients.All.SendAsync("Notify", $"Добавлено: {ValueCard}");
+            await hubContext.Clients.All.SendAsync("RoomEntrance(int PokerRoomId, int PlayerId)");
             return RedirectToAction("RoomDiscussion", "ScrumRoom", new { PokerRoomId, PlayerId });
         }
     }

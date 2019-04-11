@@ -1,4 +1,4 @@
-﻿@model IEnumerable<PlanningPoker.Topic>
+﻿@model (List<PlanningPoker.Topic>, Dictionary<string, (string, string)>) 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -36,15 +36,15 @@
 
         }
     </div>
+@{await Html.RenderPartialAsync("_ResultVoting", Model.Item2);}
 
-    <div style ="float:right;">
+  <div style ="float:right;">
         @{
             await Html.RenderPartialAsync("~/Views/Chat/_Chat.cshtml", new Message { PokerRoomId = ViewBag.PokerRoomId, PlayerId = ViewBag.PlayerId, CreateDate = DateTime.Today });
         }
     </div>
 </div>
-@if (Model.Count() != 0)
+@if (Model.Item1.Count() != 0)
      {
-            await Html.RenderPartialAsync("_TopicCreate", Model);
+            await Html.RenderPartialAsync("_TopicCreate", Model.Item1);
      }
-
