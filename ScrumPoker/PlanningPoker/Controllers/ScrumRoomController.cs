@@ -28,7 +28,7 @@ namespace PlanningPoker.Controllers
             XXL
         }
 
-        //Вычисление оценки задачи
+        //Вычисление оценки задачи.
         private string ResultMarks(List<string> result, int TypeCards)
         {
             double sum = 0;
@@ -197,7 +197,10 @@ namespace PlanningPoker.Controllers
         // Вход в комнату для создателя комнаты.
         public IActionResult RoomEntrance(int PokerRoomId, int PlayerId)
         {
+            Dictionary<string, (string, string)> resultCard = new Dictionary<string, (string, string)>();
+
             ViewBag.PokerRoomId = PokerRoomId;
+
             using (var _context = new PokerPlanningContext())
             {
                 var player = _context.Players.Where(p => p.Id == PlayerId).SingleOrDefault();
@@ -215,10 +218,25 @@ namespace PlanningPoker.Controllers
 
                 List<Topic> topics = _context.Topics.Where(t => t.PokerRoomId == PokerRoomId).ToList();
 
+                // Выбор карточек для отображения результатов голосования.
+                var Topic = _context.Topics.Where(t => t.PokerRoomId == PokerRoomId && t.Status == 2).SingleOrDefault();
+                if (Topic != null)
+                {
+                    var cards = _context.Cards.Where(c => c.TopicId == Topic.Id && c.IterationNumb == Topic.IterationNumb).ToList();
+                    if (cards != null)
+                    {
+                        foreach(var card in cards)
+                        { 
+                            var playerName = _context.Players.Where(p => p.Id == card.PlayerId).SingleOrDefault().Name;
+                            resultCard[playerName] = (card.CardValue, card.Comment);
+                        }
+                    }
+                }
+
                 ViewBag.NamePlayer = player.Name;
                 ViewBag.PlayerId = player.Id;
 
-                return View(topics);
+                return View((topics, resultCard));
             }
         }
 
@@ -408,6 +426,11 @@ namespace PlanningPoker.Controllers
                 return RedirectToAction("Index", "Home");
             }
   
+        }
+
+        public IActionResult ResultVoting()
+        {
+            return PartialView();
         }
 
         public async Task<IActionResult> GetResultVote(int PokerRoomId, int PlayerId, string ValueCard, int TopicId, string Comment)

@@ -116,7 +116,6 @@ body {
 
 .topicTable {
     table-layout: fixed;
-    width: 90%;
     border: 1px solid cadetblue;
     background: aliceblue;
     border-radius: 5px;
@@ -192,4 +191,27 @@ body {
 }
 .InputForm {
     box-shadow: 0 0 1px cadetblue;
+}
+
+.cardPlayer {
+    margin: 8px;
+    width: 100px;
+    display: inline-block;
+    text-align: center;
+    vertical-align: top;
+}
+.namePlayer {
+    font-style: italic;
+    font-weight: 700;
+}
+.valueCard {
+    background: #65a5e2;
+    box-shadow: 0 0 10px #01315f;
+    background: linear-gradient(to top, #0a60f7 0%, #030a40 50%, #0083ff 100%);
+    font-size: 24px; /* Размер шрифта */
+    padding: 45px 20px; /* Поля вокруг текста */
+    color: #fff; /* Цвет текста */
+    border: 1px solid aliceblue; /* Параметры рамки */
+    border-radius: 10px; /* Радиус скругления */
+    margin: 5px;
 }
