@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using PlanningPoker.Hubs;
 
 namespace PlanningPoker
 {
@@ -30,7 +31,13 @@ namespace PlanningPoker
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-
+            services.AddCors(options => options.AddPolicy("CorsPolicy", builder =>
+            {
+                builder.AllowAnyMethod();
+                builder.AllowAnyHeader();
+                builder.WithOrigins("http://localhost:11155/");
+                builder.AllowCredentials();
+            }));
             services.AddSignalR();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
@@ -59,10 +66,11 @@ namespace PlanningPoker
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
-
+            app.UseCors("CorsPolicy");
             app.UseSignalR(routes =>
             {
                 routes.MapHub<VotingHub>("/ScrumRoom");
+                routes.MapHub<ChatHub>("/chatHub");
             });
             
         }

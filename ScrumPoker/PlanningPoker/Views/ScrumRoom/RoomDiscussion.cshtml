@@ -4,13 +4,16 @@
 }
 
 <p class="roomName">Комната: @ViewBag.PokerRoomId  - @ViewBag.NamePlayer</p>
+@{
+    await Html.RenderPartialAsync("~/Views/Chat/_Chat.cshtml", new Message { PokerRoomId = ViewBag.PokerRoomId, PlayerId = ViewBag.PlayerId, CreateDate = DateTime.Today });
+}
 @if (ViewBag.countTopicDiscussion != 0)
 {
-<div class="topicDiscussion">
-    <p>Задача: @ViewBag.Title</p>
-    <p>Описание: @ViewBag.Title</p>
-    <p>@ViewBag.Warning</p>
-</div>
+    <div class="topicDiscussion">
+        <p>Задача: @ViewBag.Title</p>
+        <p>Описание: @ViewBag.Title</p>
+        <p>@ViewBag.Warning</p>
+    </div>
     @using (Html.BeginForm("GetResultVote", "ScrumRoom", FormMethod.Post)) /*добавить метод обработки */
     {
         <input id="PokerRoomId" name="PokerRoomId" type="hidden" value=@ViewBag.PokerRoomId />
@@ -28,7 +31,7 @@
                 <input type="submit" name="ValueCard" class="topicDiscussionBTN" value=@value />
             }
         </div>
-     }
+    }
 }
 else
 {

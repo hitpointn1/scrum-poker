@@ -6,17 +6,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using PlanningPoker.Models;
+using PlanningPoker.Hubs;
 
 namespace PlanningPoker.Controllers
 {
     public class HomeController : Controller
     {
-        IHubContext<VotingHub> hubContext;
-        public HomeController(IHubContext<VotingHub> hubContext)
-        {
-            this.hubContext = hubContext;
-        }
-
+        
         [HttpGet]
         public IActionResult Index()
         {
@@ -58,8 +54,7 @@ namespace PlanningPoker.Controllers
                     };
 
                     _context.Players.Add(NewPlayer);
-                    _context.SaveChanges();
-
+                    _context.SaveChanges();   
                     return RedirectToAction("RoomEntrance", "ScrumRoom", new { PokerRoomId = NewRoom.Id, PlayerId = NewPlayer.Id }); //переход в комнату
                 }
 
@@ -82,8 +77,6 @@ namespace PlanningPoker.Controllers
         [HttpPost("Join")]
         public IActionResult RoomJoin(JoinModel Joined)
         {
-            
-            
             // Joining to ScrumPoker room
             if (ModelState.IsValid)
             {
@@ -116,7 +109,8 @@ namespace PlanningPoker.Controllers
                                 return RedirectToAction("RoomDiscussion", "ScrumRoom", new { PokerRoomId = Room.Id, PlayerId = NewPlayer.Id });//переход в комнату
                             }
                             else //Такой пользователь уже есть, зайти под ним
-                            { 
+                            {
+                                
                                 var player = _context.Players.Where(p => p.PokerRoomId == Joined.RoomId && p.Name == NewPlayer.Name).SingleOrDefault();
                                 if (player.Role == 2)
                                     return RedirectToAction("RoomEntrance", "ScrumRoom", new { PokerRoomId = Room.Id, PlayerId = player.Id });//переход в комнату
@@ -147,6 +141,16 @@ namespace PlanningPoker.Controllers
             return View();
         }
 
+        public IActionResult GoToChat()//Test
+        {
+            return RedirectToAction("Chat", new Message { PokerRoomId = 2, PlayerId = 4, CreateDate = DateTime.Today });
+        }
+
+        public IActionResult Chat(Message model)//Chat test
+        {
+                
+                return View("~/Views/Chat/_Chat.cshtml", model);
+        }
 
         [HttpGet("List")]
         public IActionResult RoomsList()//Вывод списка комнат

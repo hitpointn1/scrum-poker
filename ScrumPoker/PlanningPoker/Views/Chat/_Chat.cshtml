@@ -1,0 +1,17 @@
+﻿@model Message
+<div class="OknoFull">
+    <div class="Okno">
+        <ul id="messagesList"></ul>
+    </div>
+    <div>
+        <input type="hidden" asp-for="@Model.PokerRoomId" name="RoomId" id="RoomId" />
+        <input type="hidden" asp-for="@Model.PlayerId" name="UserId" id="UserId" />
+        <div style="margin-left:10px; margin-top:10px;">
+            Message: <input type="text" asp-for="@Model.Context " id="messageInput" size="35" name="Context" class="topicField" />
+        </div>
+        <input style="margin-left:255px; margin-top:10px;" type="button" id="sendButton" value="Send Message" class="topicBTN" />
+    </div>
+</div>
+<script src="~/lib/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/chat.js"></script>
+<link rel="stylesheet" href="~/css/chat.css" />
