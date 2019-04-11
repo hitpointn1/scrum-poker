@@ -14,9 +14,9 @@ namespace PlanningPoker.Controllers
     {
         
         [HttpGet]
-        public IActionResult Index()
+        public IActionResult Index(CreateModel Create, JoinModel Join)
         {
-            return View();
+            return View((Create,Join));
         }
 
 
@@ -141,10 +141,6 @@ namespace PlanningPoker.Controllers
             return View();
         }
 
-        public IActionResult GoToChat()//Test
-        {
-            return RedirectToAction("Chat", new Message { PokerRoomId = 2, PlayerId = 4, CreateDate = DateTime.Today });
-        }
 
         public IActionResult Chat(Message model)//Chat test
         {
