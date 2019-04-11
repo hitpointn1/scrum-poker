@@ -91,7 +91,7 @@ body {
 }
 
 .topicField label, .commentField label {
-    padding-top: 5px;
+    padding-top: 10px;
     width: 80%;
     font-weight: 500;
 }
@@ -99,7 +99,7 @@ body {
 .topicField textarea, .commentField textarea {
     box-shadow: 0 0 3px cadetblue;
     width: 80%;
-    height: 80px;
+    height: 150px;
 }
 
 .topicBTN {
@@ -108,7 +108,7 @@ body {
     background: linear-gradient(to top, aliceblue 0%, cadetblue 36%, aliceblue 100%);
     font-size: 16px; /* Размер шрифта */
     padding: 7px 15px; /* Поля вокруг текста */
-    margin-top: 7px;
+    margin-top: 20px;
     color: #fff;
     border: 1px solid cadetblue; /* Параметры рамки */
     border-radius: 3px; /* Радиус скругления */
