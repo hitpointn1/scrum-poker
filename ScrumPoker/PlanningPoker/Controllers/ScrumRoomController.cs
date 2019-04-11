@@ -10,10 +10,187 @@ namespace PlanningPoker.Controllers
 {
     public class ScrumRoomController : Controller
     {
+
         IHubContext<VotingHub> hubContext;
+
         public ScrumRoomController(IHubContext<VotingHub> hubContext)
         {
             this.hubContext = hubContext;
+        }
+
+        enum CharTypeCards
+        {
+            XS = 1,
+            S,
+            M,
+            L,
+            XL,
+            XXL
+        }
+
+        //Вычисление оценки задачи
+        private string ResultMarks(List<string> result, int TypeCards)
+        {
+            double sum = 0;
+            int count = 0;
+            int card;
+
+            int resultcard;
+            switch(TypeCards)
+            {
+                case 1:
+                    foreach(var res in result)
+                    {
+                        if (int.TryParse(res, out card))
+                        {
+                            sum += card;
+                            count++;
+                        }
+                    }
+                    if (count == 0)
+                        resultcard = 0;
+                    else
+                        resultcard = (int) Math.Ceiling(sum / count);
+
+                    if (resultcard < 1)
+                        return "-";
+                    else if (resultcard < 2)
+                        return "1";
+                    else if (resultcard < 3)
+                        return "2";
+                    else if (resultcard < 5)
+                        return "3";
+                    else if (resultcard < 8)
+                        return "5";
+                    else if (resultcard < 13)
+                        return "8";
+                    else if (resultcard < 20)
+                        return "13";
+                    else if (resultcard < 40)
+                        return "20";
+                    else if (resultcard < 100)
+                        return "40";
+                    else
+                        return "100";
+                case 2:
+                    foreach (var res in result)
+                    {
+                        if (int.TryParse(res, out card))
+                        {
+                            sum += card;
+                            count++;
+                        }
+                    }
+                    if (count == 0)
+                        resultcard = 0;
+                    else
+                        resultcard = (int)Math.Ceiling(sum / count);
+
+                    if (resultcard < 1)
+                        return "-";
+                    else if (resultcard < 2)
+                        return "1";
+                    else if (resultcard < 3)
+                        return "2";
+                    else if (resultcard < 5)
+                        return "3";
+                    else if (resultcard < 8)
+                        return "5";
+                    else if (resultcard < 13)
+                        return "8";
+                    else if (resultcard < 20)
+                        return "13";
+                    else if (resultcard < 40)
+                        return "20";
+                    else
+                        return "40";
+
+                case 3:
+                    foreach (var res in result)
+                    {
+                        switch (res)
+                        {
+                            case "XS":
+                                sum += (int)CharTypeCards.XS;
+                                count++;
+                                break;
+                            case "S":
+                                sum += (int)CharTypeCards.S;
+                                count++;
+                                break;
+                            case "M":
+                                sum += (int)CharTypeCards.M;
+                                count++;
+                                break;
+                            case "L":
+                                sum += (int)CharTypeCards.L;
+                                count++;
+                                break;
+                            case "XL":
+                                sum += (int)CharTypeCards.XL;
+                                count++;
+                                break;
+                            case "XXL":
+                                sum += (int)CharTypeCards.XXL;
+                                count++;
+                                break;
+                            default:
+                                break;
+                        }
+
+                    }
+                    if (count == 0)
+                        resultcard = 0;
+                    else
+                        resultcard = (int)Math.Ceiling(sum / count);
+
+                    if (resultcard < 1)
+                        return "-";
+                    else if (resultcard < 2)
+                        return "XS";
+                    else if (resultcard < 3)
+                        return "S";
+                    else if (resultcard < 4)
+                        return "M";
+                    else if (resultcard < 5)
+                        return "L";
+                    else if (resultcard < 6)
+                        return "XL";
+                    else
+                        return "XXL";
+                case 4:
+                    foreach (var res in result)
+                    {
+                        if (int.TryParse(res, out card))
+                        {
+                            sum += card;
+                            count++;
+                        }
+                    }
+                    if (count == 0)
+                        resultcard = 0;
+                    else
+                        resultcard = (int)Math.Ceiling(sum / count);
+
+                    if (resultcard < 1)
+                        return "-";
+                    else if (resultcard < 2)
+                        return "1";
+                    else if (resultcard < 5)
+                        return "2";
+                    else if (resultcard < 10)
+                        return "5";
+                    else if (resultcard < 20)
+                        return "10";
+                    else if (resultcard < 50)
+                        return "20";
+                    else if (resultcard < 100)
+                        return "50";
+                    else 
+                        return "100";
+                default:
+                    return "Ошибка";
+            }
         }
 
         [HttpGet]
@@ -58,7 +235,8 @@ namespace PlanningPoker.Controllers
                         Title = Title,
                         Description = Description,
                         Status = 1, // не обсуждается
-                        PokerRoomId = PokerRoomId
+                        PokerRoomId = PokerRoomId, 
+                        IterationNumb = 0
                     };
 
                     _context.Topics.Add(Topic);
@@ -89,10 +267,19 @@ namespace PlanningPoker.Controllers
                     if (Topic.Status == 1 && countTopicStart == 0)//если голосование необходимо запустить
                     {
                         Topic.Status = 2; // старт голосования
+                        Topic.IterationNumb++; 
                     }
                     else if (Topic.Status == 2 && countTopicStart == 1)
                     {
                         Topic.Status = 1; // стоп голосования
+
+                        var cards = (List<string>) _context.Cards.Where(c =>c.TopicId == IdTopic && c.IterationNumb == Topic.IterationNumb)
+                            .Select(s=> s.CardValue).ToList(); // получение всех карточек для данного топика
+
+                        var typeCards = _context.PokerRooms.Where(t => t.Id == PokerRoomId).
+                            SingleOrDefault().TypeCards; // получение типа карточек
+
+                        Topic.Marks = ResultMarks(cards, typeCards); // подсчет общей оценки для карточки
                     }
                     else
                     {
@@ -148,7 +335,7 @@ namespace PlanningPoker.Controllers
                 var countTopicDiscussion = TopicDiscussion.ToList().Count;
 
                 ViewBag.CountTopicDiscussion = countTopicDiscussion;
-                //Если тема обсуждается
+                //Если тема обсуждается.
                 if (countTopicDiscussion != 0)
                 {
                     ViewBag.Title = TopicDiscussion.SingleOrDefault().Title;
@@ -176,10 +363,12 @@ namespace PlanningPoker.Controllers
         }
 
         [HttpPost]
+        //Удаление комнаты.
         public IActionResult DeletePokerRoom(int PokerRoomId)
         {
             using (var _context = new PokerPlanningContext())
             {
+                // Начало транзакции.
                 using (var transaction = _context.Database.BeginTransaction())
                 {
                     try
@@ -199,11 +388,12 @@ namespace PlanningPoker.Controllers
                             _context.SaveChanges();
                         }
 
-                        //Удаление всех игроков для комнаты
+                        // Удаление всех игроков для комнаты.
                         var players = _context.Players.Where(p => p.PokerRoomId == PokerRoomId);
                         _context.Players.RemoveRange(players);
                         _context.SaveChanges();
 
+                        // Удаление комнаты.
                         var pokerRoom = _context.PokerRooms.Where(p => p.Id == PokerRoomId).Single();
                         _context.PokerRooms.Remove(pokerRoom);
                         _context.SaveChanges();
@@ -224,22 +414,32 @@ namespace PlanningPoker.Controllers
         {
             using (var _context = new PokerPlanningContext())
             {
-                var count = _context.Cards.Where(c => c.TopicId == TopicId && c.PlayerId == PlayerId).Count();
+                // Вычисление итерации голосования топика. 
+                var count = _context.Topics.Where(t => t.Id == TopicId).SingleOrDefault().IterationNumb;
 
-                var Cards = new Card
+                var cardIteration = _context.Cards.Where(c => c.TopicId == TopicId && c.PlayerId == PlayerId && c.IterationNumb == count)
+                    .SingleOrDefault(); // Проверка, существует ли карточка в БД для этого игрока.
+
+                if (cardIteration == null)
                 {
-                    CardValue = ValueCard,
-                    PlayerId = PlayerId,
-                    TopicId = TopicId,
-                    Comment = Comment,
-                    IterationNumb = count + 1
-                };
+                    var Cards = new Card
+                    {
+                        CardValue = ValueCard,
+                        PlayerId = PlayerId,
+                        TopicId = TopicId,
+                        Comment = Comment,
+                        IterationNumb = count
+                    };
 
-                _context.Cards.Add(Cards);
-                _context.SaveChanges();
+                    _context.Cards.Add(Cards);
+                    _context.SaveChanges();
+                }
+                else
+                {
+                    //предупреждение
+                }
             }
-        
-        //    await hubContext.Clients.All.SendAsync("Notify", $"Добавлено: {ValueCard}");
+          //  await hubContext.Clients.All.SendAsync("Notify", $"Добавлено: {ValueCard}");
             return RedirectToAction("RoomDiscussion", "ScrumRoom", new { PokerRoomId, PlayerId });
         }
     }

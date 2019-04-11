@@ -6,10 +6,11 @@
 <p class="roomName">Комната: @ViewBag.PokerRoomId  - @ViewBag.NamePlayer</p>
 @if (ViewBag.countTopicDiscussion != 0)
 {
-    <div class="topicDiscussion">
-        <p>Задача: @ViewBag.Title</p>
-        <p>Описание: @ViewBag.Title</p>
-    </div>
+<div class="topicDiscussion">
+    <p>Задача: @ViewBag.Title</p>
+    <p>Описание: @ViewBag.Title</p>
+    <p>@ViewBag.Warning</p>
+</div>
     @using (Html.BeginForm("GetResultVote", "ScrumRoom", FormMethod.Post)) /*добавить метод обработки */
     {
         <input id="PokerRoomId" name="PokerRoomId" type="hidden" value=@ViewBag.PokerRoomId />
@@ -27,7 +28,7 @@
                 <input type="submit" name="ValueCard" class="topicDiscussionBTN" value=@value />
             }
         </div>
-    }
+     }
 }
 else
 {
@@ -35,3 +36,4 @@ else
         <p>Обсуждение еще не началось.</p>
     </div>
 }
+

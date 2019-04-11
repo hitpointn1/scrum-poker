@@ -44,6 +44,7 @@ namespace PlanningPoker
         public string Description { get; set; }
         public string Marks { get; set; }
         public int Status { get; set; }
+        public int IterationNumb { get; set; }
 
         public int PokerRoomId { get; set; }
         public PokerRoom PokerRoom { get; set; }
