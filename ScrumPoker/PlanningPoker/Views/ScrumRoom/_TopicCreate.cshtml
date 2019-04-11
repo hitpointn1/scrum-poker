@@ -1,0 +1,57 @@
+﻿@model IEnumerable<PlanningPoker.Topic>
+
+<table class="topicTable">
+    <thead>
+        <tr>
+            <th>
+            </th>
+            <th>
+                Задача
+            </th>
+            <th>
+                Описание
+            </th>
+            <th>
+                Оценка
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        @using (Html.BeginForm("StartVoting", "ScrumRoom", FormMethod.Post))
+            {
+        <tr>
+            <td>
+                <input id="IdTopic" name="IdTopic" type="hidden" value=@item.Id />
+                <input id="PokerRoomId" name="PokerRoomId" type="hidden" value=@ViewBag.PokerRoomId />
+                <input id="PlayerId" name="PlayerId" type="hidden" value=@ViewBag.PlayerId />
+                @if (item.Status == 1)
+                        {
+                <input type="submit" class="topicBTN" value="Старт" />
+                        }
+                        else
+                        {
+                <input type="submit" class="topicBTN" value="Стоп" />
+                        }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Marks)
+            </td>
+            <td>
+                <a asp-action="EditTopic" asp-route-id="@item.Id">Редактировать</a> |
+                <a asp-action="DeleteTopic" asp-route-id="@item.Id">Удалить</a>
+            </td>
+        </tr>
+
+            }
+        }
+    </tbody>
+</table>

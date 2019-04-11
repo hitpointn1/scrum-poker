@@ -1,0 +1,50 @@
+﻿@model (List<PlanningPoker.Topic>, Dictionary<string, (string, string)>) 
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm("DeletePokerRoom", "ScrumRoom", FormMethod.Post))
+{
+    <div class="deleteRoom">
+        <input id="PokerRoomId" name="PokerRoomId" type="hidden" value=@ViewBag.PokerRoomId />
+        <input type="submit" class="deleteBTN" value="Удалить" />
+        <p class="roomName">Комната: @ViewBag.PokerRoomId  - @ViewBag.NamePlayer</p>
+    </div>
+}
+
+<div style="overflow:hidden; object-position:center; width: 100%; " class="col-auto">
+    <div style ="float:left;">
+        @using (Html.BeginForm("TopicCreate", "ScrumRoom", FormMethod.Post))
+        {
+            <div class="topicCreate">
+                <div class="topicField">
+                    @Html.Label("Title", "Задача")
+                    <br />
+                    @Html.TextBox("Title")
+                </div>
+
+                <br />
+                <div class="topicField">
+                    @Html.Label("Description", "Описание")
+                    <br />
+                    @Html.TextArea("Description")
+                </div>
+                <input id="PokerRoomId" name="PokerRoomId" type="hidden" value=@ViewBag.PokerRoomId />
+                <input id="PlayerId" name="PlayerId" type="hidden" value=@ViewBag.PlayerId />
+                <input type="submit" class="topicBTN" value="Добавить" />
+            </div>
+
+        }
+    </div>
+@{await Html.RenderPartialAsync("_ResultVoting", Model.Item2);}
+
+  <div style ="float:right;">
+        @{
+            await Html.RenderPartialAsync("~/Views/Chat/_Chat.cshtml", new Message { PokerRoomId = ViewBag.PokerRoomId, PlayerId = ViewBag.PlayerId, CreateDate = DateTime.Today });
+        }
+    </div>
+</div>
+@if (Model.Item1.Count() != 0)
+     {
+            await Html.RenderPartialAsync("_TopicCreate", Model.Item1);
+     }
