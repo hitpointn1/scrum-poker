@@ -1,0 +1,51 @@
+﻿@model PlanningPoker.Models.CreateModel
+@{
+    ViewData["Title"] = "RoomCreate";
+}
+<div class="CreateForm">
+    <h4 style="margin-top:3%">Создание комнаты</h4>
+
+    <form asp-action="RoomCreate" asp-controller="Home" asp-antiforgery="true" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <br />
+
+            <div>
+                <label asp-for="Name"></label>
+                <br />
+                <input type="text" asp-for="Name" class="InputForm"/>
+                <p><span asp-validation-for="Name" class="text-danger"></span></p>
+
+            </div>
+
+            <div>
+                <label asp-for="RoomTitle"></label>
+                <br />
+                <input type="text" asp-for="RoomTitle"  class="InputForm"/>
+                <p><span asp-validation-for="RoomTitle" class="text-danger"></span></p>
+            </div>
+
+            <div>
+                <label asp-for="Password"></label>
+                <br />
+                <input type="password" asp-for="Password" class="InputForm"/>
+            </div>
+
+            <div style="margin-bottom: 5%">
+                <label asp-for="CardsType"></label>
+                <br />
+                <select name="CardsType" asp-for="CardsType" style="font-size:12px;">
+                    <option value=1>1,2,3,5,8,13,20,40,100,∞,?,CC</option>
+                    <option value=2>1,2,3,5,8,13,20,40,?</option>
+                    <option value=3>XS,S,M,L,XL,XXL,?</option>
+                    <option value=4>1,2,5,10,20,50,100</option>
+                </select>
+            </div>
+
+            <input type="submit" value="Создать" class="topicBTN"/>
+        </div>
+    </form>
+</div>
+    @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }

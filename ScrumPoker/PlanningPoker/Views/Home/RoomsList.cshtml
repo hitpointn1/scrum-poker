@@ -4,15 +4,15 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<table class="table" align="center" style="text-align:center;">
+<table class="topicTable" align="center" style="text-align:center;">
     <tr>
-        <td>
+        <td width="100px">
             Id
         </td>
         <td width="400px">
             Название
         </td>
-        <td width="100px">
+        <td >
             Участники
         </td>
         <td>
@@ -33,7 +33,7 @@
             </td>
 
             <td>
-                <a asp-action="" asp-route-id="@item.Id">Join</a>
+                <a asp-action="RoomJoin" asp-route-id="@item.Id">Join</a>
             </td>
 
         </tr>

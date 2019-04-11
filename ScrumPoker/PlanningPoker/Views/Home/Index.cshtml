@@ -4,51 +4,38 @@
 <div class="text-center">
     <h2>Покер Планирования</h2>
 </div>
-<style>
-    .SignForm {
-        float: left;
-        width: 400px;
-        height: 425px;
-        border: 1px solid;
-        border-color: cadetblue;
-        background-color: aliceblue;
-        text-align: center;
-        margin-bottom: 50px;
-    }
-</style>
 <br />
 <div style="overflow:hidden; object-position:center; " class="col-auto">
 
     <div style="width: 100%; margin-left: 125px;">
 
         <div class="SignForm">
-
             <form asp-action="RoomCreate" asp-controller="Home" asp-antiforgery="true" method="post">
                 <br />
 
-                <h4 style="margin-bottom: 10px;">
+                <h4 style="margin-bottom: 5%;">
                     Создание комнаты
                 </h4>
 
-                <div style="margin-bottom: 15px;">
+                <div style="margin-bottom: 5%;">
                     @Html.Label("Имя")
                     <br />
-                    @Html.TextBox("Name")
+                    <input type="text" name="Name" />
                 </div>
 
-                <div style="margin-bottom: 15px;">
+                <div style="margin-bottom: 5%;">
                     @Html.Label("Название комнаты")
                     <br />
-                    @Html.TextBox("RoomTitle")
+                    <input type="text" name="RoomTitle" />
                 </div>
 
-                <div style="margin-bottom: 15px;">
+                <div style="margin-bottom:5%;">
                     @Html.Label("Пароль")
                     <br />
-                    @Html.TextBox("Password")
+                    <input type="password" name="Password" />
                 </div>
 
-                <div style="margin-bottom: 20px;">
+                <div style="margin-bottom: 5%;">
                     @Html.Label("Тип карт")
                     <br />
                     <select name="CardsType" style="font-size:12px;">
@@ -59,7 +46,7 @@
                     </select>
                 </div>
 
-                <input type="submit" value="Создать"/>
+                <input type="submit" value="Создать" style="margin-bottom:10%" class="topicBTN"/>
                 
             </form>
         </div>
@@ -71,36 +58,37 @@
             <form asp-action="RoomJoin" asp-controller="Home" asp-antiforgery="true" method="post">
                 <br />
 
-                <h4 style="margin-bottom: 40px;">
+                <h4 style="margin-bottom: 5%;">
                     Присоединение к комнате
                 </h4>
 
-                <div style="margin-bottom: 25px;">
+                <div style="margin-bottom: 11%;">
                     @Html.Label("Имя")
                     <p>
-                        @Html.TextBox("Name")
+                        <input type="text" name="Name" />
                     </p>
                 </div>
 
-                <div style="margin-bottom: 25px;">
+                <div style="margin-bottom: 11%;">
 
                     @Html.Label("Id комнаты")
                     <p>
-                        @Html.TextBox("RoomId")
+                        <input type="number" name="RoomId" />
                     </p>
                 </div>
 
-                <div style="margin-bottom: 15px;">
+                <div style="margin-bottom: 7%;">
                     @Html.Label("Пароль")
                     <p>
-                        @Html.TextBox("Password")
+                        <input type="password" name="Password" />
                     </p>
                 </div>
 
                 <br />
 
-                <input type="submit" value="Присоедниться"/>
-                </form>
+
+				<input type="submit" value="Присоединиться" style="margin-bottom:5%" class="topicBTN"/>                
+            </form>
         </div>
     </div>
 </div>
