@@ -9,8 +9,11 @@ function ChatHub() {
         li.textContent = encoding;
         document.getElementById("messagesList").appendChild(li);
     });
-    connection.start();
-
+    connection.start().then(function () {
+        const Id = document.getElementById("RoomId").value;
+        connection.invoke("JoinGroup", Id);
+    });
+    
     document.getElementById("sendButton").addEventListener("click", event => {
         const UserId = document.getElementById("UserId").value;
         const RoomId = document.getElementById("RoomId").value;

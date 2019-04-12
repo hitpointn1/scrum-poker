@@ -11,7 +11,6 @@ namespace PlanningPoker.Hubs
         public async Task SendMessage(int RoomId, int UserId, string Context)
         {
             string playername;
-            JoinGroup(RoomId.ToString());
             using (var _context = new PokerPlanningContext())
             {
                 var messagetodb = new Message()
@@ -27,9 +26,9 @@ namespace PlanningPoker.Hubs
             }
             await this.Clients.Groups($"{RoomId}").SendAsync("ForwardToClients", playername, Context);
         }
-        public void JoinGroup(string groupName)
+        public async Task JoinGroup(int groupName)
         {
-            this.Groups.AddToGroupAsync(this.Context.ConnectionId, groupName);
+          await this.Groups.AddToGroupAsync(this.Context.ConnectionId, groupName.ToString());
         }
         public override Task OnConnectedAsync()
         {
