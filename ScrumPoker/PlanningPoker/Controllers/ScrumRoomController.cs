@@ -91,7 +91,6 @@ namespace PlanningPoker.Controllers
                 case 3:
                     min = 7;
                     max = 0;
-                    string strmin, strmax;
                     foreach (var res in result)
                     {
                         switch (res)
@@ -250,7 +249,7 @@ namespace PlanningPoker.Controllers
 
         [HttpPost]
         // Старт или стоп обсуждения задачи.
-        public IActionResult StartVoting(int PokerRoomId, int PlayerId, int IdTopic)
+        public async Task<IActionResult> StartVoting(int PokerRoomId, int PlayerId, int IdTopic)
         {
             try
             {
@@ -285,6 +284,7 @@ namespace PlanningPoker.Controllers
                     }
                     _context.Topics.Update(Topic);
                     _context.SaveChanges();
+                    await hubContext.Clients.All.SendAsync("UpdatePage");
                 }
             }
             catch (ArgumentNullException)
@@ -442,7 +442,7 @@ namespace PlanningPoker.Controllers
                     //предупреждение
                 }
             }
-            await hubContext.Clients.All.SendAsync("RoomEntrance(int PokerRoomId, int PlayerId)");
+            await hubContext.Clients.All.SendAsync("UpdatePage");
             return RedirectToAction("RoomDiscussion", "ScrumRoom", new { PokerRoomId, PlayerId });
         }
     }

@@ -6,11 +6,15 @@ using System.Threading.Tasks;
 
 namespace PlanningPoker
 {
-    public class VotingHub: Hub
+    public class VotingHub : Hub
     {
-        public async Task Send(string message)
+        public override async Task OnConnectedAsync()
         {
-            await this.Clients.All.SendAsync("Send", message);
+            await base.OnConnectedAsync();
+        }
+        public override async Task OnDisconnectedAsync(Exception exception)
+        {
+            await base.OnDisconnectedAsync(exception);
         }
     }
 }
