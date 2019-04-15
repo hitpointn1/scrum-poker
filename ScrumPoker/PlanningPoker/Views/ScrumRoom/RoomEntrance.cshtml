@@ -1,4 +1,4 @@
-﻿@model (List<PlanningPoker.Topic>, Dictionary<string, (string, string)>)
+﻿@model (List<PlanningPoker.Topic>, Dictionary<string, (string, string)>, List<PlanningPoker.Player>)
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -31,7 +31,7 @@
                 </div>
                 <input id="PokerRoomId" name="PokerRoomId" type="hidden" value=@ViewBag.PokerRoomId />
                 <input id="PlayerId" name="PlayerId" type="hidden" value=@ViewBag.PlayerId />
-                <input type="submit" class="topicBTN" value="Добавить" />
+                <input type="submit" id ="topicBTN" class="topicBTN" value="Добавить" />
             </div>
 
         }
@@ -43,10 +43,42 @@
         }
     </div>
 </div>
+
 @{await Html.RenderPartialAsync("_ResultVoting", Model.Item2);}
+<div class="OnlineUser">
+    @{await Html.RenderPartialAsync("_OnlineUserList", Model.Item3);}
+</div>
+
 @if (Model.Item1.Count() != 0)
 {
     await Html.RenderPartialAsync("_TopicCreate", Model.Item1);
 }
+
 <script src="~/lib/signalr/dist/browser/signalr.js"></script>
 <script src="~/js/voting.js"></script>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+@*
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script>
+           function loadPartialView()  {
+                $.ajax({
+                     url:  '@Url.Action("_OnlineUserList", "ScrumRoom")',
+                     type: 'GET',
+                     cache: false,
+                     dataType:'html',
+                     success: function(result)  {
+                          $('#OnlineUser').html(result);
+                     }
+                });
+        }
+
+      $function () {
+           loadPartialView();
+           window.setInterval("loadPartialView()", 3000);
+      });
+    </script>
+*@
