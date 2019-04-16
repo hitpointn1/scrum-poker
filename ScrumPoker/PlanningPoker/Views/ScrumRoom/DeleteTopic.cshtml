@@ -1,0 +1,44 @@
+﻿@model PlanningPoker.Topic
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Удаление задачи";
+}
+
+<h3>Удаление задачи</h3>
+
+<h4>Вы уверены, что хотите удалить эту задачу?</h4>
+<div>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Marks)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Marks)
+        </dd>
+    </dl>
+    
+    <form asp-action="DeleteTopic">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Удалить" class="topicBTN" />
+        <div>
+            <a asp-controller="ScrumRoom"
+               asp-action="RoomEntrance"
+               asp-route-PokerRoomId="@ViewBag.PokerRoomId"
+               asp-route-PlayerId="@ViewBag.PlayerId">Вернуться назад</a>
+        </div>
+    </form>
+</div>
