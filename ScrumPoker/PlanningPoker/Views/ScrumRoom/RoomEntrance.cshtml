@@ -22,22 +22,19 @@
                     <br />
                     @Html.TextBox("Title")
                 </div>
-
-                <br />
-                <div class="topicField">
-                    @Html.Label("Description", "Описание")
                     <br />
-                    @Html.TextArea("Description")
+                    <div class="topicField">
+                        @Html.Label("Description", "Описание")
+                        <br />
+                        @Html.TextArea("Description")
+                    </div>
+                    <input id="PokerRoomId" name="PokerRoomId" type="hidden" value=@ViewBag.PokerRoomId />
+                    <input id="PlayerId" name="PlayerId" type="hidden" value=@ViewBag.PlayerId />
+                    <input type="submit" id ="topicBTN" class="topicBTN" value="Добавить" />
                 </div>
-                <input id="PokerRoomId" name="PokerRoomId" type="hidden" value=@ViewBag.PokerRoomId />
-                <input id="PlayerId" name="PlayerId" type="hidden" value=@ViewBag.PlayerId />
-                <input type="submit" id ="topicBTN" class="topicBTN" value="Добавить" />
-            </div>
-
-        }
+            </div>        }
     </div>
-
-    <div style="float:left; margin-right:20px; margin-left:50px;">
+ <div style="float:left; margin-right:20px; margin-left:50px;">
         @{
             await Html.RenderPartialAsync("~/Views/Chat/_Chat.cshtml", new Message { PokerRoomId = ViewBag.PokerRoomId, PlayerId = ViewBag.PlayerId, CreateDate = DateTime.Today });
         }
