@@ -26,13 +26,28 @@ namespace PlanningPoker.Hubs
             }
             await this.Clients.Groups($"{RoomId}").SendAsync("ForwardToClients", playername, Context);
         }
-        public async Task JoinGroup(int groupName)
+
+
+        public async Task JoinGroup(int RoomId)
         {
-          await this.Groups.AddToGroupAsync(this.Context.ConnectionId, groupName.ToString());
-        }
-        public override Task OnConnectedAsync()
-        {
-            return base.OnConnectedAsync();
+            using (var _context = new PokerPlanningContext())
+            {
+                var messageslist = _context.Messages
+                    .Where(msg => msg.PokerRoomId == RoomId)
+                    .Select(msg => new { msg.Context, msg.PlayerId, msg.CreateDate});
+
+                if (!(messageslist is null))
+                {
+                    var playername = _context.Players
+                    .Join(messageslist, pl => pl.Id, msg => msg.PlayerId,
+                    (players, messages) => new { players.Name, messages.Context, messages.CreateDate })
+                    .OrderBy(time => time.CreateDate);
+
+                    foreach (var item in playername)
+                        await this.Clients.Caller.SendAsync("ForwardToClients", item.Name, item.Context);
+                }
+            }
+            await this.Groups.AddToGroupAsync(this.Context.ConnectionId, RoomId.ToString());
         }
     }
 }

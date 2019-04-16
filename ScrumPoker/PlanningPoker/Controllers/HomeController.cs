@@ -143,7 +143,7 @@ namespace PlanningPoker.Controllers
         
         [NonAction]
         public IActionResult Chat(Message model)//Chat test
-        {
+        {  
                 return View("~/Views/Chat/_Chat.cshtml", model);
         }
 
