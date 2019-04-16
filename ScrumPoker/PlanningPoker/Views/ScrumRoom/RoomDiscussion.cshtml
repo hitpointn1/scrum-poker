@@ -4,18 +4,24 @@
 }
 
 <p class="roomName">Комната: @ViewBag.PokerRoomId  - @ViewBag.NamePlayer</p>
-@{
-    await Html.RenderPartialAsync("~/Views/Chat/_Chat.cshtml", new Message { PokerRoomId = ViewBag.PokerRoomId, PlayerId = ViewBag.PlayerId, CreateDate = DateTime.Today });
-}
-<div class="OnlineUser">
-    @{await Html.RenderPartialAsync("_OnlineUserList", Model.Item2);}
+<div>
+    <div class="OneLineForm">
+        @{
+            await Html.RenderPartialAsync("~/Views/Chat/_Chat.cshtml", new Message { PokerRoomId = ViewBag.PokerRoomId, PlayerId = ViewBag.PlayerId, CreateDate = DateTime.Today });
+        }
+    </div>
+    <div class="OneLineForm">
+        <p class="nametableOnline">Online пользователи:</p>
+        <div class="OnlineUser">
+            @{await Html.RenderPartialAsync("_OnlineUserList", Model.Item2);}
+        </div>
+    </div>
 </div>
 @if (ViewBag.countTopicDiscussion != 0)
 {
     <div class="topicDiscussion">
-        <p>Задача: @ViewBag.Title</p>
-        <p>Описание: @ViewBag.Title</p>
-        <p>@ViewBag.Warning</p>
+        <p class="titleName"><b>Задача:</b> @ViewBag.Title</p>
+        <p class="descriptionName"><b>Описание:</b> @ViewBag.Description</p>
     </div>
     if (ViewBag.StatusMessage == 0)
     {
@@ -63,7 +69,7 @@ else
 {
     <input id="PlayerId" name="PlayerId" type="hidden" value=@ViewBag.PlayerId />
     <div class="topicDiscussion">
-        <p class="StatusDiscussion">Обсуждение еще не началось.</p>
+        <p class="StatusDiscussion">Обсуждение еще не началось...</p>
     </div>
 }
 <script src="~/lib/signalr/dist/browser/signalr.js"></script>

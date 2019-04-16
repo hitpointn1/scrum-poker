@@ -141,6 +141,22 @@ body {
         word-wrap: break-word;
     }
 
+.col1{
+    width: 12%;
+}
+
+.col2{
+    width: 20%;
+}
+
+.col4{
+    width:15%
+}
+
+.col5{
+    width:18%;
+}
+
 .topicDiscussionBTN {
     background: #65a5e2;
     box-shadow: 0 0 10px #01315f;
@@ -237,16 +253,40 @@ body {
     display:inline-block;
 }
 .tableUserOnline {
-    table-layout: fixed;
     border: 1px solid cadetblue;
-    border-radius: 10px;
-    background: aliceblue;
-    border-radius: 5px;
-    margin-top: 20px;
+    background: cadetblue;
+    color: #fff;
     box-shadow: 0 0 7px cadetblue;
-    width: 300px;
+    width: 210px;
 }
 .nametableOnline {
     text-align: center;
     font-weight: 700;
+    color: cadetblue;
+}
+.OneLineForm {
+    display: inline-block;
+    margin: 12px;
+    vertical-align: top;
+}
+.topicDiscussion {
+    width: 410px;
+    background: cadetblue;
+    color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px #01315f;
+    padding: 5px;
+    margin: 5px;
+    margin-bottom: 10px;
+}
+.StatusDiscussion {
+    font-weight: 700;
+    font-size: 20px;
+    text-align:center;
+}
+.commentField label {
+    font-weight: 700;
+}
+.titleName, .descriptionName{
+    font-size: 17px;
 }
