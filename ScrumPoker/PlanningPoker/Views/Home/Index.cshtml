@@ -1,4 +1,5 @@
-﻿@{
+﻿@model (CreateModel,JoinModel)
+@{
     ViewData["Title"] = "Home";
 }
 <div class="text-center">
@@ -18,27 +19,27 @@
                 </h4>
 
                 <div style="margin-bottom: 5%;">
-                    @Html.Label("Имя")
+                    <label asp-for="@Model.Item1.Name"></label>
                     <br />
-                    <input type="text" name="Name" />
+                    <input type="text" asp-for="@Model.Item1.Name" name="Name" class="InputForm" />
                 </div>
 
                 <div style="margin-bottom: 5%;">
-                    @Html.Label("Название комнаты")
+                    <label asp-for="@Model.Item1.RoomTitle"></label>
                     <br />
-                    <input type="text" name="RoomTitle" />
+                    <input type="text" asp-for="@Model.Item1.RoomTitle" name="RoomTitle" class="InputForm" />
                 </div>
 
                 <div style="margin-bottom:5%;">
-                    @Html.Label("Пароль")
+                    <label asp-for="@Model.Item1.Password"></label>
                     <br />
-                    <input type="password" name="Password" />
+                    <input type="password" asp-for="@Model.Item1.Password" name="Password" class="InputForm" />
                 </div>
 
                 <div style="margin-bottom: 5%;">
-                    @Html.Label("Тип карт")
+                    <label asp-for="@Model.Item1.CardsType"></label>
                     <br />
-                    <select name="CardsType" style="font-size:12px;">
+                    <select name="CardsType" asp-for="@Model.Item1.CardsType" style="font-size:12px;">
                         <option value=1>1,2,3,5,8,13,20,40,100,∞,?,CC</option>
                         <option value=2>1,2,3,5,8,13,20,40,?</option>
                         <option value=3>XS,S,M,L,XL,XXL,?</option>
@@ -46,8 +47,8 @@
                     </select>
                 </div>
 
-                <input type="submit" value="Создать" style="margin-bottom:10%" class="topicBTN"/>
-                
+                <input type="submit" value="Создать" style="margin-bottom:10%" class="topicBTN" />
+
             </form>
         </div>
 
@@ -63,25 +64,22 @@
                 </h4>
 
                 <div style="margin-bottom: 11%;">
-                    @Html.Label("Имя")
-                    <p>
-                        <input type="text" name="Name" />
-                    </p>
+                    <label asp-for="@Model.Item2.Name"></label>
+                    <br />
+                    <input type="text" asp-for="@Model.Item2.Name" name="Name" class="InputForm" />
                 </div>
 
                 <div style="margin-bottom: 11%;">
 
-                    @Html.Label("Id комнаты")
-                    <p>
-                        <input type="number" name="RoomId" />
-                    </p>
+                    <label asp-for="@Model.Item2.RoomId"></label>
+                    <br />
+                    <input type="number" asp-for="@Model.Item2.RoomId" name="RoomId" class="InputForm" />
                 </div>
 
                 <div style="margin-bottom: 7%;">
-                    @Html.Label("Пароль")
-                    <p>
-                        <input type="password" name="Password" />
-                    </p>
+                    <label asp-for="@Model.Item2.Password"></label>
+                    <br />
+                    <input type="password" asp-for="@Model.Item2.Password" name="Password" class="InputForm" />
                 </div>
 
                 <br />
