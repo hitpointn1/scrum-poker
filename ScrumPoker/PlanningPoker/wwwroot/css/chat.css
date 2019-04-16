@@ -1,0 +1,17 @@
+﻿.Okno {
+    height: 310px;
+    width: 400px;
+    overflow: scroll;
+}
+
+.OknoFull {
+    border-radius: 10px;
+    box-shadow: 0 4px 10px cadetblue;
+    border: 1px solid;
+    border-color: cadetblue;
+    background-color: aliceblue;
+    height: 410px;
+    width: 403px;
+    margin-top: 20px;
+    margin-bottom: 30px;
+}

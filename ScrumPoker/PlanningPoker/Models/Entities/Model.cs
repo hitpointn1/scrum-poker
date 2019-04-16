@@ -44,6 +44,7 @@ namespace PlanningPoker
         public string Description { get; set; }
         public string Marks { get; set; }
         public int Status { get; set; }
+        public int IterationNumb { get; set; }
 
         public int PokerRoomId { get; set; }
         public PokerRoom PokerRoom { get; set; }
@@ -52,7 +53,7 @@ namespace PlanningPoker
     {
         public int Id { get; set; }
         public string Comment { get; set; }
-        public int CardValue { get; set; }
+        public string CardValue { get; set; }
         public int IterationNumb { get; set; }
 
         public int PlayerId { get; set; }

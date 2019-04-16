@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PlanningPoker.Models;
 
 namespace PlanningPoker.Migrations
 {
     [DbContext(typeof(PokerPlanningContext))]
-    partial class PokerPlanningContextModelSnapshot : ModelSnapshot
+    [Migration("20190410195322_Change_Type_Of_CardValue_In_Cards")]
+    partial class Change_Type_Of_CardValue_In_Cards
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -118,8 +120,6 @@ namespace PlanningPoker.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Description");
-
-                    b.Property<int>("IterationNumb");
 
                     b.Property<string>("Marks");
 

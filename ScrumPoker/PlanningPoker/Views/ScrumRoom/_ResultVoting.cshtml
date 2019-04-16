@@ -1,0 +1,11 @@
+﻿@model Dictionary<string, (string, string)>
+<div class="resultCard">
+    @foreach (var dict in Model)
+    { 
+        <div class="cardPlayer">
+            <p class="valueCard">@dict.Value.Item1</p>
+            <p class="namePlayer">@dict.Key</p>
+            <p class="commentCard">@dict.Value.Item2</p>
+        </div>
+    }
+</div>

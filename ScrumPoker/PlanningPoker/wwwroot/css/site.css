@@ -73,6 +73,7 @@ body {
 }
 .topicCreate {
     box-shadow: 0 0 10px cadetblue;
+    border-radius: 20px;
     border: 1px solid;
     border-color: cadetblue;
     background-color: aliceblue;
@@ -89,16 +90,16 @@ body {
     width: 80%;
 }
 
-.topicField label {
-    padding-top: 5px;
+.topicField label, .commentField label {
+    padding-top: 10px;
     width: 80%;
     font-weight: 500;
 }
 
-.topicField textarea {
+.topicField textarea, .commentField textarea {
     box-shadow: 0 0 3px cadetblue;
     width: 80%;
-    height: 80px;
+    height: 150px;
 }
 
 .topicBTN {
@@ -107,7 +108,7 @@ body {
     background: linear-gradient(to top, aliceblue 0%, cadetblue 36%, aliceblue 100%);
     font-size: 16px; /* Размер шрифта */
     padding: 7px 15px; /* Поля вокруг текста */
-    margin-top: 7px;
+    margin-top: 20px;
     color: #fff;
     border: 1px solid cadetblue; /* Параметры рамки */
     border-radius: 3px; /* Радиус скругления */
@@ -115,7 +116,6 @@ body {
 
 .topicTable {
     table-layout: fixed;
-    width: 90%;
     border: 1px solid cadetblue;
     background: aliceblue;
     border-radius: 5px;
@@ -191,4 +191,27 @@ body {
 }
 .InputForm {
     box-shadow: 0 0 1px cadetblue;
+}
+
+.cardPlayer {
+    margin: 8px;
+    width: 100px;
+    display: inline-block;
+    text-align: center;
+    vertical-align: top;
+}
+.namePlayer {
+    font-style: italic;
+    font-weight: 700;
+}
+.valueCard {
+    background: #65a5e2;
+    box-shadow: 0 0 10px #01315f;
+    background: linear-gradient(to top, #0a60f7 0%, #030a40 50%, #0083ff 100%);
+    font-size: 24px; /* Размер шрифта */
+    padding: 45px 20px; /* Поля вокруг текста */
+    color: #fff; /* Цвет текста */
+    border: 1px solid aliceblue; /* Параметры рамки */
+    border-radius: 10px; /* Радиус скругления */
+    margin: 5px;
 }
