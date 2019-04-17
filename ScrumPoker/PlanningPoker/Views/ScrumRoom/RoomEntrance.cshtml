@@ -60,26 +60,9 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
-
-@*
-    <script src="~/lib/jquery/dist/jquery.js"></script>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script>
-           function loadPartialView()  {
-                $.ajax({
-                     url:  '@Url.Action("_OnlineUserList", "ScrumRoom")',
-                     type: 'GET',
-                     cache: false,
-                     dataType:'html',
-                     success: function(result)  {
-                          $('#OnlineUser').html(result);
-                     }
-                });
-        }
-
-      $function () {
-           loadPartialView();
-           window.setInterval("loadPartialView()", 3000);
-      });
-    </script>
-*@
+<script>
+    topicBTN.onclick = function () {
+        if (window.document.getElementById("Title").value === '')
+            alert('Не задано название задачи! Заполните поле "Задача"!');
+    };
+</script>

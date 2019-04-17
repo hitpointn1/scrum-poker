@@ -141,17 +141,18 @@ body {
         word-wrap: break-word;
     }
 
-.col1{
-    width: 12%;
-}
-
 .col2{
     width: 20%;
+}
+
+.col3{
+    width: 30%;
 }
 
 .col4{
     width:15%
 }
+
 
 .col5{
     width:18%;
