@@ -60,3 +60,9 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+<script>
+    topicBTN.onclick = function () {
+        if (window.document.getElementById("Title").value === '')
+            alert('Не задано название задачи! Заполните поле "Задача"!');
+    };
+</script>
