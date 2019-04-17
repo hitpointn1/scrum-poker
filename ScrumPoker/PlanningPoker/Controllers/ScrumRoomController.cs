@@ -546,5 +546,15 @@ namespace PlanningPoker.Controllers
             }
             return RedirectToAction("RoomEntrance", new { PokerRoomId, PlayerId });
         }
+
+        [HttpGet]
+        public IActionResult _OnlineUserList(int PokerRoomId)
+        {
+            using (var _context = new PokerPlanningContext())
+            {
+                var playersOnline = _context.Players.Where(p => p.PokerRoomId == PokerRoomId && p.IsOnline == true).ToList();
+            }
+            return PartialView();
+        }
     }
 }

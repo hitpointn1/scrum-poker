@@ -15,10 +15,22 @@ namespace PlanningPoker
             this.Groups.AddToGroupAsync(this.Context.ConnectionId, groupName);
         }
 
+        public async Task OnlineUserList(int RoomId)
+        {
+            string[] playersOnline;
+            string adminName;
+            using (var _context = new PokerPlanningContext())
+            {
+                var players = _context.Players.Where(p => p.PokerRoomId == RoomId && p.IsOnline == true);
+                playersOnline = players.Select(s => s.Name).ToArray();
+                adminName = players.Where(p => p.Role == 2).SingleOrDefault().Name;
+            }
+            await this.Clients.All.SendAsync("OnlineUsers", playersOnline, adminName);
+        }
+
         public override async Task OnConnectedAsync()
         {
             await Clients.All.SendAsync("EntranceUser");
-           // await Clients.Caller.SendAsync("UpdatePage"); //при подключении другого пользователя - обновление (для отображения списка онлайн)
             await base.OnConnectedAsync();
         }
 
