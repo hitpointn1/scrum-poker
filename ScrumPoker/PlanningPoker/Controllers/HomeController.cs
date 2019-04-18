@@ -156,7 +156,7 @@ namespace PlanningPoker.Controllers
                 var Pcount = _context.Players.ToList();
 
                 var rooms = RList.GroupJoin(Pcount, R => R.Id, P => P.PokerRoomId, 
-                    (rl, pc) => new RoomListModel(rl.Id, rl.Title, pc.Where(m =>m.IsOnline == true).Count()))
+                    (rl, pc) => new RoomListModel(rl.Id, rl.Title, pc.Count()))
                     .ToList();
 
                 return View(rooms);
