@@ -3,53 +3,53 @@
 <table class="topicTable">
     <thead>
         <tr>
-            <th>
+            <th class="col1">
             </th>
-            <th>
+            <th class="col2">
                 Задача
             </th>
-            <th>
+            <th class="col3">
                 Описание
             </th>
-            <th>
+            <th class="col4">
                 Оценка
             </th>
-            <th></th>
+            <th class="col5"></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
-        @using (Html.BeginForm("StartVoting", "ScrumRoom", FormMethod.Post))
+            @using (Html.BeginForm("StartVoting", "ScrumRoom", FormMethod.Post))
             {
-        <tr>
-            <td>
-                <input id="IdTopic" name="IdTopic" type="hidden" value=@item.Id />
-                <input id="PokerRoomId" name="PokerRoomId" type="hidden" value=@ViewBag.PokerRoomId />
-                <input id="PlayerId" name="PlayerId" type="hidden" value=@ViewBag.PlayerId />
-                @if (item.Status == 1)
+                <tr>
+                    <td class="col1">
+                        <input id="IdTopic" name="IdTopic" type="hidden" value=@item.Id />
+                        <input id="PokerRoomId" name="PokerRoomId" type="hidden" value=@ViewBag.PokerRoomId />
+                        <input id="PlayerId" name="PlayerId" type="hidden" value=@ViewBag.PlayerId />
+                        @if (item.Status == 1)
                         {
-                <input type="submit" class="topicBTN" value="Старт" />
+                            <input type="submit" class="topicBTN" value="Старт" />
                         }
                         else
                         {
-                <input type="submit" class="topicBTN" value="Стоп" />
+                            <input type="submit" class="topicBTN" value="Стоп" />
                         }
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Marks)
-            </td>
-            <td>
-                <a asp-action="EditTopic" asp-route-id="@item.Id">Редактировать</a> |
-                <a asp-action="DeleteTopic" asp-route-id="@item.Id">Удалить</a>
-            </td>
-        </tr>
+                    </td>
+                    <td class="col2">
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td class="col3">
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td class="col4">
+                        @Html.DisplayFor(modelItem => item.Marks)
+                    </td>
+                    <td class="col5">
+                        <a asp-action="EditTopic" asp-route-id="@item.Id">Редактировать</a> |
+                        <a asp-action="DeleteTopic" asp-route-id="@item.Id">Удалить</a>
+                    </td>
+                </tr>
 
             }
         }

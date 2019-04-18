@@ -1,0 +1,49 @@
+﻿@model PlanningPoker.Topic
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Редактирование задачи";
+}
+
+<h3>Редактирование задачи</h3>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="TopicEdit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Marks" class="control-label"></label>
+                <input asp-for="Marks" class="form-control" />
+                <input asp-for="PokerRoomId" type="hidden" class="form-control" value=@ViewBag.PokerRoomId />
+                <input asp-for="Status" type="hidden" class="form-control" />
+                <input asp-for="IterationNumb" type="hidden" class="form-control" />
+                <span asp-validation-for="Marks" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Сохранить" class="topicBTN" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-controller="ScrumRoom"
+       asp-action="RoomEntrance"
+       asp-route-PokerRoomId="@ViewBag.PokerRoomId" 
+       asp-route-PlayerId="@ViewBag.PlayerId">Вернуться назад</a>
+</div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

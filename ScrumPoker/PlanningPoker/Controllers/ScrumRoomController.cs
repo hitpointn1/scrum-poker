@@ -176,6 +176,7 @@ namespace PlanningPoker.Controllers
         // Вход в комнату для создателя комнаты.
         public IActionResult RoomEntrance(int PokerRoomId, int PlayerId)
         {
+            //Результат карточек.
             Dictionary<string, (string, string)> resultCard = new Dictionary<string, (string, string)>();
 
             ViewBag.PokerRoomId = PokerRoomId;
@@ -212,10 +213,13 @@ namespace PlanningPoker.Controllers
                     }
                 }
 
+                //Список пользователей-онлайн.
+                var playersOnline = _context.Players.Where(p => p.PokerRoomId == PokerRoomId && p.IsOnline == true).ToList();
+
                 ViewBag.NamePlayer = player.Name;
                 ViewBag.PlayerId = player.Id;
 
-                return View((topics, resultCard));
+                return View((topics, resultCard, playersOnline));
             }
         }
 
@@ -223,26 +227,29 @@ namespace PlanningPoker.Controllers
         // Создание задачи для голосовани.
         public IActionResult TopicCreate(int PokerRoomId, int PlayerId, string Title, string Description)
         {
-            try
+            if (Title != null)
             {
-                using (var _context = new PokerPlanningContext())
+                try
                 {
-                    var Topic = new Topic
+                    using (var _context = new PokerPlanningContext())
                     {
-                        Title = Title,
-                        Description = Description,
-                        Status = 1, // не обсуждается
-                        PokerRoomId = PokerRoomId, 
-                        IterationNumb = 0
-                    };
+                        var Topic = new Topic
+                        {
+                            Title = Title,
+                            Description = Description,
+                            Status = 1, // не обсуждается
+                            PokerRoomId = PokerRoomId,
+                            IterationNumb = 0
+                        };
 
-                    _context.Topics.Add(Topic);
-                    _context.SaveChanges();
+                        _context.Topics.Add(Topic);
+                        _context.SaveChanges();
+                    }
                 }
-            }
-            catch (ArgumentNullException)
-            {
-                return new BadRequestResult();//Сделать: Отправка в форму, что не введено;
+                catch (ArgumentNullException)
+                {
+                    return new BadRequestResult();//Сделать: Отправка в форму, что не введено;
+                }
             }
             return RedirectToAction("RoomEntrance", new { PokerRoomId, PlayerId });
         }
@@ -251,6 +258,7 @@ namespace PlanningPoker.Controllers
         // Старт или стоп обсуждения задачи.
         public async Task<IActionResult> StartVoting(int PokerRoomId, int PlayerId, int IdTopic)
         {
+
             try
             {
                 using (var _context = new PokerPlanningContext())
@@ -264,14 +272,14 @@ namespace PlanningPoker.Controllers
                     if (Topic.Status == 1 && countTopicStart == 0)//если голосование необходимо запустить
                     {
                         Topic.Status = 2; // старт голосования
-                        Topic.IterationNumb++; 
+                        Topic.IterationNumb++;
                     }
                     else if (Topic.Status == 2 && countTopicStart == 1)
                     {
                         Topic.Status = 1; // стоп голосования
 
-                        var cards = (List<string>) _context.Cards.Where(c =>c.TopicId == IdTopic && c.IterationNumb == Topic.IterationNumb)
-                            .Select(s=> s.CardValue).ToList(); // получение всех карточек для данного топика
+                        var cards = (List<string>)_context.Cards.Where(c => c.TopicId == IdTopic && c.IterationNumb == Topic.IterationNumb)
+                            .Select(s => s.CardValue).ToList(); // получение всех карточек для данного топика
 
                         var typeCards = _context.PokerRooms.Where(t => t.Id == PokerRoomId).
                             SingleOrDefault().TypeCards; // получение типа карточек
@@ -284,13 +292,13 @@ namespace PlanningPoker.Controllers
                     }
                     _context.Topics.Update(Topic);
                     _context.SaveChanges();
-                    await hubContext.Clients.All.SendAsync("UpdatePage");
                 }
             }
             catch (ArgumentNullException)
             {
                 return new BadRequestResult();//Сделать: Отправка в форму, что не введено;
             }
+            await hubContext.Clients.All.SendAsync("UpdatePage");
             return RedirectToAction("RoomEntrance", new { PokerRoomId, PlayerId });
         }
 
@@ -333,12 +341,27 @@ namespace PlanningPoker.Controllers
                 var countTopicDiscussion = TopicDiscussion.ToList().Count;
 
                 ViewBag.CountTopicDiscussion = countTopicDiscussion;
+
                 //Если тема обсуждается.
                 if (countTopicDiscussion != 0)
                 {
-                    ViewBag.Title = TopicDiscussion.SingleOrDefault().Title;
-                    ViewBag.Description = TopicDiscussion.SingleOrDefault().Description;
-                    ViewBag.IdTopic = TopicDiscussion.SingleOrDefault().Id;
+                    var topic = TopicDiscussion.SingleOrDefault();
+
+                    var cards = _context.Cards.Where(c => c.TopicId == topic.Id 
+                        && c.IterationNumb == topic.IterationNumb && c.PlayerId == PlayerId).SingleOrDefault();
+
+                    if (cards == null)
+                    {
+                        ViewBag.StatusMessage = 0; // еще нет карточки
+                    }
+                    else
+                    {
+                        ViewBag.StatusMessage = 1; // уже обсудили
+                        ViewBag.Value = cards.CardValue;
+                    }
+                    ViewBag.Title = topic.Title;
+                    ViewBag.Description = topic.Description;
+                    ViewBag.IdTopic = topic.Id;
                 }
 
                 try
@@ -352,11 +375,13 @@ namespace PlanningPoker.Controllers
                     return new BadRequestResult();
                 }
 
+                //Список пользователей-онлайн.
+                var playersOnline = _context.Players.Where(p => p.PokerRoomId == PokerRoomId && p.IsOnline == true).ToList();
 
                 ViewBag.NamePlayer = player.Name;
                 ViewBag.PlayerId = player.Id;
 
-                return View(valueCards);
+                return View((valueCards, playersOnline));
             }
         }
 
@@ -408,11 +433,7 @@ namespace PlanningPoker.Controllers
   
         }
 
-        public IActionResult ResultVoting()
-        {
-            return PartialView();
-        }
-
+        //Получение результатов голосования участников.
         public async Task<IActionResult> GetResultVote(int PokerRoomId, int PlayerId, string ValueCard, int TopicId, string Comment)
         {
             using (var _context = new PokerPlanningContext())
@@ -444,6 +465,86 @@ namespace PlanningPoker.Controllers
             }
             await hubContext.Clients.All.SendAsync("UpdatePage");
             return RedirectToAction("RoomDiscussion", "ScrumRoom", new { PokerRoomId, PlayerId });
+        }
+
+        [HttpGet]
+        //Редактирование задачи.
+        public IActionResult EditTopic(int id)
+        {
+            Topic topic;
+            using (var _context = new PokerPlanningContext())
+            {
+                topic = _context.Topics.Where(t => t.Id == id).SingleOrDefault();
+
+                ViewBag.PokerRoomId = topic.PokerRoomId;
+
+                var player = _context.Players.Where(p => p.PokerRoomId == topic.PokerRoomId && p.Role == 2).SingleOrDefault();
+                ViewBag.PlayerId = player.Id;
+            }
+            return View(topic);
+        }
+
+
+        [HttpPost]
+        public IActionResult EditTopic(Topic topic)
+        {
+            if (ModelState.IsValid)
+            {
+                using (var _context = new PokerPlanningContext())
+                {
+                    _context.Topics.Update(topic);
+                    _context.SaveChanges();
+
+                    ViewBag.PokerRoomId = topic.PokerRoomId;
+
+                    var player = _context.Players.Where(p => p.PokerRoomId == topic.PokerRoomId && p.Role == 2).SingleOrDefault();
+                    ViewBag.PlayerId = player.Id;
+                }
+            }
+            return View(topic);
+        }
+
+        [HttpGet]
+        //Удаление задачи.
+        public IActionResult DeleteTopic(int id)
+        {
+            Topic topic;
+            using (var _context = new PokerPlanningContext())
+            {
+                topic = _context.Topics.Where(t => t.Id == id).SingleOrDefault();
+
+                ViewBag.PokerRoomId = topic.PokerRoomId;
+
+                var player = _context.Players.Where(p => p.PokerRoomId == topic.PokerRoomId && p.Role == 2).SingleOrDefault();
+                ViewBag.PlayerId = player.Id;
+            }
+            return View(topic);
+        }
+
+
+        [HttpPost]
+        public IActionResult DeleteTopic(Topic topic)
+        {
+            int PokerRoomId;
+
+            int PlayerId;
+
+            using (var _context = new PokerPlanningContext())
+            {
+               topic = _context.Topics.Where(t => t.Id == topic.Id).SingleOrDefault();
+
+                PokerRoomId = topic.PokerRoomId;
+
+                var player = _context.Players.Where(p => p.PokerRoomId == topic.PokerRoomId && p.Role == 2).SingleOrDefault();
+                PlayerId = player.Id;
+
+                var cards = _context.Cards.Where(c => c.TopicId == topic.Id).ToList();
+                _context.Cards.RemoveRange(cards);
+
+                _context.Topics.Remove(topic);
+                _context.SaveChanges();
+            }
+            return RedirectToAction("RoomEntrance", new { PokerRoomId, PlayerId });
         }
     }
 }

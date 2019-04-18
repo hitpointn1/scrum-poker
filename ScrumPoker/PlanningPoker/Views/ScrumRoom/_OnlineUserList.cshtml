@@ -1,0 +1,30 @@
+﻿@model IEnumerable<PlanningPoker.Player>
+
+<table id="tableUserOnline" class="tableUserOnline">
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+               @if(item.Role == 2)
+               {
+                   <p>@item.Name (admin)</p>
+               }
+               else
+               {
+                    <p>@item.Name</p>
+               }
+            </td>
+            <td>
+                @if (item.IsOnline)
+                {
+                    <p>online</p>
+
+                }
+                else
+                {
+                    <p>offline</p>
+                }
+            </td>
+        </tr>
+    }
+</table>

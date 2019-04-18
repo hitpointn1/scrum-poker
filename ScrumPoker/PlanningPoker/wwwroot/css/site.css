@@ -121,6 +121,7 @@ body {
     border-radius: 5px;
     margin-top: 20px;
     box-shadow: 0 0 7px cadetblue;
+    width: 100%
 }
 
     .topicTable th, td {
@@ -140,14 +141,31 @@ body {
         word-wrap: break-word;
     }
 
+.col2{
+    width: 20%;
+}
+
+.col3{
+    width: 30%;
+}
+
+.col4{
+    width:15%
+}
+
+
+.col5{
+    width:18%;
+}
+
 .topicDiscussionBTN {
     background: #65a5e2;
     box-shadow: 0 0 10px #01315f;
-    background: linear-gradient(to top, #65a5e2 0%, #01315f 36%, #003490 100%);
+    background: linear-gradient(to top, #0a60f7 0%, #030a40 50%, #0083ff 100%);
     font-size: 24px; /* Размер шрифта */
-    padding: 25px 20px; /* Поля вокруг текста */
+    padding: 45px 20px; /* Поля вокруг текста */
     color: #fff; /* Цвет текста */
-    border: 1px solid #003490; /* Параметры рамки */
+    border: 1px solid aliceblue; /* Параметры рамки */
     border-radius: 10px; /* Радиус скругления */
     margin: 5px;
 }
@@ -193,13 +211,18 @@ body {
     box-shadow: 0 0 1px cadetblue;
 }
 
-.cardPlayer {
+.cardPlayer{
     margin: 8px;
     width: 100px;
     display: inline-block;
     text-align: center;
     vertical-align: top;
 }
+    .cardPlayer input {
+        margin: 8px;
+        width: 90px;
+    }
+
 .namePlayer {
     font-style: italic;
     font-weight: 700;
@@ -214,4 +237,57 @@ body {
     border: 1px solid aliceblue; /* Параметры рамки */
     border-radius: 10px; /* Радиус скругления */
     margin: 5px;
+}
+
+.valueCardDiscussion {
+    background: #65a5e2;
+    box-shadow: 0 0 10px #01315f;
+    background: linear-gradient(to top, #0a60f7 0%, #030a40 50%, #0083ff 100%);
+    font-size: 24px; /* Размер шрифта */
+    padding: 45px 20px; /* Поля вокруг текста */
+    color: #fff; /* Цвет текста */
+    border: 5px solid #107112; /* Параметры рамки */
+    border-radius: 10px; /* Радиус скругления */
+    margin: 5px;
+}
+.resultCard{
+    display:inline-block;
+}
+.tableUserOnline {
+    border: 1px solid cadetblue;
+    background: cadetblue;
+    color: #fff;
+    box-shadow: 0 0 7px cadetblue;
+    width: 210px;
+}
+.nametableOnline {
+    text-align: center;
+    font-weight: 700;
+    color: cadetblue;
+}
+.OneLineForm {
+    display: inline-block;
+    margin: 12px;
+    vertical-align: top;
+}
+.topicDiscussion {
+    width: 410px;
+    background: cadetblue;
+    color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px #01315f;
+    padding: 5px;
+    margin: 5px;
+    margin-bottom: 10px;
+}
+.StatusDiscussion {
+    font-weight: 700;
+    font-size: 20px;
+    text-align:center;
+}
+.commentField label {
+    font-weight: 700;
+}
+.titleName, .descriptionName{
+    font-size: 17px;
 }

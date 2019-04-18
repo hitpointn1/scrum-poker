@@ -1,42 +1,75 @@
-﻿@model List<string>
+﻿@model (List<string>, List<PlanningPoker.Player>)
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <p class="roomName">Комната: @ViewBag.PokerRoomId  - @ViewBag.NamePlayer</p>
-@{
-    await Html.RenderPartialAsync("~/Views/Chat/_Chat.cshtml", new Message { PokerRoomId = ViewBag.PokerRoomId, PlayerId = ViewBag.PlayerId, CreateDate = DateTime.Today });
-}
+<div>
+    <div class="OneLineForm">
+        @{
+            await Html.RenderPartialAsync("~/Views/Chat/_Chat.cshtml", new Message { PokerRoomId = ViewBag.PokerRoomId, PlayerId = ViewBag.PlayerId, CreateDate = DateTime.Today });
+        }
+    </div>
+    <div class="OneLineForm">
+        <p class="nametableOnline">Online пользователи:</p>
+        <div class="OnlineUser">
+            @{await Html.RenderPartialAsync("_OnlineUserList", Model.Item2);}
+        </div>
+    </div>
+</div>
 @if (ViewBag.countTopicDiscussion != 0)
 {
     <div class="topicDiscussion">
-        <p>Задача: @ViewBag.Title</p>
-        <p>Описание: @ViewBag.Title</p>
-        <p>@ViewBag.Warning</p>
+        <p class="titleName"><b>Задача:</b> @ViewBag.Title</p>
+        <p class="descriptionName"><b>Описание:</b> @ViewBag.Description</p>
     </div>
-    @using (Html.BeginForm("GetResultVote", "ScrumRoom", FormMethod.Post)) /*добавить метод обработки */
+    if (ViewBag.StatusMessage == 0)
     {
-        <input id="PokerRoomId" name="PokerRoomId" type="hidden" value=@ViewBag.PokerRoomId />
-        <input id="PlayerId" name="PlayerId" type="hidden" value=@ViewBag.PlayerId />
-        <input id="TopicId" name="TopicId" type="hidden" value=@ViewBag.IdTopic />
+        @using (Html.BeginForm("GetResultVote", "ScrumRoom", FormMethod.Post))
+        {
+            <input id="PokerRoomId" name="PokerRoomId" type="hidden" value=@ViewBag.PokerRoomId />
+            <input id="PlayerId" name="PlayerId" type="hidden" value=@ViewBag.PlayerId />
+            <input id="TopicId" name="TopicId" type="hidden" value=@ViewBag.IdTopic />
 
-        <div class="commentField">
-            @Html.Label("Comment", "Комментарий")
-            <br />
-            @Html.TextArea("Comment")
-        </div>
-        <div class="valueTopic">
-            @foreach (var value in Model)
+            <div class="commentField">
+                @Html.Label("Comment", "Комментарий")
+                <br />
+                @Html.TextArea("Comment")
+            </div>
+            <div class="valueTopic">
+                @foreach (var value in Model.Item1)
+                {
+                    <div class="cardPlayer">
+                        <input type="submit" name="ValueCard" class="topicDiscussionBTN" value=@value />
+                    </div>
+                }
+            </div>
+        }
+    }
+    else
+    { 
+        <div class="resultCard">
+            @foreach (var value in Model.Item1)
             {
-                <input type="submit" name="ValueCard" class="topicDiscussionBTN" value=@value />
+                <div class="cardPlayer">
+                     @if (value == ViewBag.Value)
+                     {
+                         <p class="valueCardDiscussion">@ViewBag.Value</p>
+                     }
+                    else
+                     {
+                         <p class="valueCard">@value</p>
+                     }
+                </div>
             }
         </div>
     }
 }
 else
 {
+    <input id="PlayerId" name="PlayerId" type="hidden" value=@ViewBag.PlayerId />
     <div class="topicDiscussion">
-        <p>Обсуждение еще не началось.</p>
+        <p class="StatusDiscussion">Обсуждение еще не началось...</p>
     </div>
 }
 <script src="~/lib/signalr/dist/browser/signalr.js"></script>

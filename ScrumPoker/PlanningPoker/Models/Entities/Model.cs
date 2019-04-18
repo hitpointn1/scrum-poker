@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 
@@ -40,10 +41,19 @@ namespace PlanningPoker
     public class Topic
     {
         public int Id { get; set; }
+
+        [Required(ErrorMessage = "Не задано название задачи")]
+        [Display(Name = "Задача")]
         public string Title { get; set; }
+
+        [Display(Name = "Описание")]
         public string Description { get; set; }
+
+        [Display(Name = "Оценка")]
         public string Marks { get; set; }
+
         public int Status { get; set; }
+
         public int IterationNumb { get; set; }
 
         public int PokerRoomId { get; set; }
