@@ -55,7 +55,7 @@ namespace PlanningPoker.Controllers
 
                     _context.Players.Add(NewPlayer);
                     _context.SaveChanges();   
-                    return RedirectToAction("RoomEntrance", "ScrumRoom", new { PokerRoomId = NewRoom.Id, PlayerId = NewPlayer.Id }); //переход в комнату
+                    return RedirectToAction("RoomEntrance", "ScrumRoom", new { PokerRoomId = NewRoom.Id, PlayerId = NewPlayer.Id, password = _nullablepassword }); //переход в комнату
                 }
 
             }
@@ -106,16 +106,16 @@ namespace PlanningPoker.Controllers
                             {
                                 _context.Players.Add(NewPlayer);
                                 _context.SaveChanges();
-                                return RedirectToAction("RoomDiscussion", "ScrumRoom", new { PokerRoomId = Room.Id, PlayerId = NewPlayer.Id });//переход в комнату
+                                return RedirectToAction("RoomDiscussion", "ScrumRoom", new { PokerRoomId = Room.Id, PlayerId = NewPlayer.Id, password = _nullablepassword });//переход в комнату
                             }
                             else //Такой пользователь уже есть, зайти под ним
                             {
                                 
                                 var player = _context.Players.Where(p => p.PokerRoomId == Joined.RoomId && p.Name == NewPlayer.Name).SingleOrDefault();
                                 if (player.Role == 2)
-                                    return RedirectToAction("RoomEntrance", "ScrumRoom", new { PokerRoomId = Room.Id, PlayerId = player.Id });//переход в комнату
+                                    return RedirectToAction("RoomEntrance", "ScrumRoom", new { PokerRoomId = Room.Id, PlayerId = player.Id, password = _nullablepassword });//переход в комнату
                                 else
-                                    return RedirectToAction("RoomDiscussion", "ScrumRoom", new { PokerRoomId = Room.Id, PlayerId = player.Id });
+                                    return RedirectToAction("RoomDiscussion", "ScrumRoom", new { PokerRoomId = Room.Id, PlayerId = player.Id, password = _nullablepassword });
                             }
                         }
                         else

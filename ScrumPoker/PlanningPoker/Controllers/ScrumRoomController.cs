@@ -174,58 +174,66 @@ namespace PlanningPoker.Controllers
 
         [HttpGet]
         // Вход в комнату для создателя комнаты.
-        public IActionResult RoomEntrance(int PokerRoomId, int PlayerId)
+        public IActionResult RoomEntrance(int PokerRoomId, int PlayerId, int Password)
         {
             //Результат карточек.
+
             Dictionary<string, (string, string)> resultCard = new Dictionary<string, (string, string)>();
 
             ViewBag.PokerRoomId = PokerRoomId;
 
             using (var _context = new PokerPlanningContext())
             {
-                var player = _context.Players.Where(p => p.Id == PlayerId).SingleOrDefault();
-
-                try
+                var pw = _context.PokerRooms.FirstOrDefault(rid => rid.Id == PokerRoomId).Password;
+                if (Equals(Password, pw))
                 {
-                    player.IsOnline = true;
-                    _context.Players.Update(player);
-                    _context.SaveChanges();
-                }
-                catch (NullReferenceException)
-                {
-                    return new BadRequestResult();
-                }
+                    ViewBag.Password = pw;
+                    var player = _context.Players.Where(p => p.Id == PlayerId).SingleOrDefault();
 
-                List<Topic> topics = _context.Topics.Where(t => t.PokerRoomId == PokerRoomId).ToList();
-
-                // Выбор карточек для отображения результатов голосования.
-                var Topic = _context.Topics.Where(t => t.PokerRoomId == PokerRoomId && t.Status == 2).SingleOrDefault();
-                if (Topic != null)
-                {
-                    var cards = _context.Cards.Where(c => c.TopicId == Topic.Id && c.IterationNumb == Topic.IterationNumb).ToList();
-                    if (cards != null)
+                    try
                     {
-                        foreach(var card in cards)
-                        { 
-                            var playerName = _context.Players.Where(p => p.Id == card.PlayerId).SingleOrDefault().Name;
-                            resultCard[playerName] = (card.CardValue, card.Comment);
+                        player.IsOnline = true;
+                        _context.Players.Update(player);
+                        _context.SaveChanges();
+                    }
+                    catch (NullReferenceException)
+                    {
+                        return new BadRequestResult();
+                    }
+
+                    List<Topic> topics = _context.Topics.Where(t => t.PokerRoomId == PokerRoomId).ToList();
+
+                    // Выбор карточек для отображения результатов голосования.
+                    var Topic = _context.Topics.Where(t => t.PokerRoomId == PokerRoomId && t.Status == 2).SingleOrDefault();
+                    if (Topic != null)
+                    {
+                        var cards = _context.Cards.Where(c => c.TopicId == Topic.Id && c.IterationNumb == Topic.IterationNumb).ToList();
+                        if (cards != null)
+                        {
+                            foreach (var card in cards)
+                            {
+                                var playerName = _context.Players.Where(p => p.Id == card.PlayerId).SingleOrDefault().Name;
+                                resultCard[playerName] = (card.CardValue, card.Comment);
+                            }
                         }
                     }
+
+                    //Список пользователей-онлайн.
+                    var playersOnline = _context.Players.Where(p => p.PokerRoomId == PokerRoomId && p.IsOnline == true).ToList();
+
+                    ViewBag.NamePlayer = player.Name;
+                    ViewBag.PlayerId = player.Id;
+
+                    return View((topics, resultCard, playersOnline));
                 }
-
-                //Список пользователей-онлайн.
-                var playersOnline = _context.Players.Where(p => p.PokerRoomId == PokerRoomId && p.IsOnline == true).ToList();
-
-                ViewBag.NamePlayer = player.Name;
-                ViewBag.PlayerId = player.Id;
-
-                return View((topics, resultCard, playersOnline));
+                else
+                    return RedirectToAction("RoomsList", "Home");
             }
         }
 
         [HttpPost]
         // Создание задачи для голосовани.
-        public IActionResult TopicCreate(int PokerRoomId, int PlayerId, string Title, string Description)
+        public IActionResult TopicCreate(int PokerRoomId, int PlayerId, string Title, string Description, int password)
         {
             if (Title != null)
             {
@@ -251,12 +259,12 @@ namespace PlanningPoker.Controllers
                     return new BadRequestResult();//Сделать: Отправка в форму, что не введено;
                 }
             }
-            return RedirectToAction("RoomEntrance", new { PokerRoomId, PlayerId });
+            return RedirectToAction("RoomEntrance", new { PokerRoomId, PlayerId, password });
         }
 
         [HttpPost]
         // Старт или стоп обсуждения задачи.
-        public async Task<IActionResult> StartVoting(int PokerRoomId, int PlayerId, int IdTopic)
+        public async Task<IActionResult> StartVoting(int PokerRoomId, int PlayerId, int IdTopic,int password)
         {
 
             try
@@ -299,12 +307,12 @@ namespace PlanningPoker.Controllers
                 return new BadRequestResult();//Сделать: Отправка в форму, что не введено;
             }
             await hubContext.Clients.All.SendAsync("UpdatePage");
-            return RedirectToAction("RoomEntrance", new { PokerRoomId, PlayerId });
+            return RedirectToAction("RoomEntrance", new { PokerRoomId, PlayerId, password });
         }
 
         [HttpGet]
         //Комната обсуждения задачи.
-        public IActionResult RoomDiscussion(int PokerRoomId, int PlayerId) //SignalR настроить
+        public IActionResult RoomDiscussion(int PokerRoomId, int PlayerId , int password) //SignalR настроить
         {
             ViewBag.PokerRoomId = PokerRoomId;
 
@@ -312,76 +320,83 @@ namespace PlanningPoker.Controllers
 
             using (var _context = new PokerPlanningContext())
             {
-                var player = _context.Players.Where(p => p.Id == PlayerId).SingleOrDefault();
-
-                var typeCards = _context.PokerRooms.Where(p => p.Id == PokerRoomId).SingleOrDefault().TypeCards;
-
-                string stringValueCards = "";
-
-                switch (typeCards)
+                var pw = _context.PokerRooms.FirstOrDefault(rid => rid.Id == PokerRoomId).Password;
+                if (Equals(password, pw))
                 {
-                    case 1:
-                        stringValueCards = "1,2,3,5,8,13,20,40,100,∞,?,CC";
-                        break;
-                    case 2:
-                        stringValueCards = "1,2,3,5,8,13,20,40,?";
-                        break;
-                    case 3:
-                        stringValueCards = "XS,S,M,L,XL,XXL,?";
-                        break;
-                    case 4:
-                        stringValueCards = "1,2,5,10,20,50,100";
-                        break;
-                }
+                    ViewBag.Password = pw;
+                    var player = _context.Players.Where(p => p.Id == PlayerId).SingleOrDefault();
 
+                    var typeCards = _context.PokerRooms.Where(p => p.Id == PokerRoomId).SingleOrDefault().TypeCards;
 
-                valueCards = stringValueCards.Split(new char[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                    string stringValueCards = "";
 
-                var TopicDiscussion = _context.Topics.Where(t => t.PokerRoomId == PokerRoomId && t.Status == 2);
-                var countTopicDiscussion = TopicDiscussion.ToList().Count;
-
-                ViewBag.CountTopicDiscussion = countTopicDiscussion;
-
-                //Если тема обсуждается.
-                if (countTopicDiscussion != 0)
-                {
-                    var topic = TopicDiscussion.SingleOrDefault();
-
-                    var cards = _context.Cards.Where(c => c.TopicId == topic.Id 
-                        && c.IterationNumb == topic.IterationNumb && c.PlayerId == PlayerId).SingleOrDefault();
-
-                    if (cards == null)
+                    switch (typeCards)
                     {
-                        ViewBag.StatusMessage = 0; // еще нет карточки
+                        case 1:
+                            stringValueCards = "1,2,3,5,8,13,20,40,100,∞,?,CC";
+                            break;
+                        case 2:
+                            stringValueCards = "1,2,3,5,8,13,20,40,?";
+                            break;
+                        case 3:
+                            stringValueCards = "XS,S,M,L,XL,XXL,?";
+                            break;
+                        case 4:
+                            stringValueCards = "1,2,5,10,20,50,100";
+                            break;
                     }
-                    else
+
+
+                    valueCards = stringValueCards.Split(new char[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+
+                    var TopicDiscussion = _context.Topics.Where(t => t.PokerRoomId == PokerRoomId && t.Status == 2);
+                    var countTopicDiscussion = TopicDiscussion.ToList().Count;
+
+                    ViewBag.CountTopicDiscussion = countTopicDiscussion;
+
+                    //Если тема обсуждается.
+                    if (countTopicDiscussion != 0)
                     {
-                        ViewBag.StatusMessage = 1; // уже обсудили
-                        ViewBag.Value = cards.CardValue;
+                        var topic = TopicDiscussion.SingleOrDefault();
+
+                        var cards = _context.Cards.Where(c => c.TopicId == topic.Id
+                            && c.IterationNumb == topic.IterationNumb && c.PlayerId == PlayerId).SingleOrDefault();
+
+                        if (cards == null)
+                        {
+                            ViewBag.StatusMessage = 0; // еще нет карточки
+                        }
+                        else
+                        {
+                            ViewBag.StatusMessage = 1; // уже обсудили
+                            ViewBag.Value = cards.CardValue;
+                        }
+                        ViewBag.Title = topic.Title;
+                        ViewBag.Description = topic.Description;
+                        ViewBag.IdTopic = topic.Id;
                     }
-                    ViewBag.Title = topic.Title;
-                    ViewBag.Description = topic.Description;
-                    ViewBag.IdTopic = topic.Id;
+
+                    try
+                    {
+                        player.IsOnline = true;
+                        _context.Players.Update(player);
+                        _context.SaveChanges();
+                    }
+                    catch (NullReferenceException)
+                    {
+                        return new BadRequestResult();
+                    }
+
+                    //Список пользователей-онлайн.
+                    var playersOnline = _context.Players.Where(p => p.PokerRoomId == PokerRoomId && p.IsOnline == true).ToList();
+
+                    ViewBag.NamePlayer = player.Name;
+                    ViewBag.PlayerId = player.Id;
+
+                    return View((valueCards, playersOnline));
                 }
+                return RedirectToAction("RoomsList", "Home");
 
-                try
-                {
-                    player.IsOnline = true;
-                    _context.Players.Update(player);
-                    _context.SaveChanges();
-                }
-                catch (NullReferenceException)
-                {
-                    return new BadRequestResult();
-                }
-
-                //Список пользователей-онлайн.
-                var playersOnline = _context.Players.Where(p => p.PokerRoomId == PokerRoomId && p.IsOnline == true).ToList();
-
-                ViewBag.NamePlayer = player.Name;
-                ViewBag.PlayerId = player.Id;
-
-                return View((valueCards, playersOnline));
             }
         }
 
@@ -434,7 +449,7 @@ namespace PlanningPoker.Controllers
         }
 
         //Получение результатов голосования участников.
-        public async Task<IActionResult> GetResultVote(int PokerRoomId, int PlayerId, string ValueCard, int TopicId, string Comment)
+        public async Task<IActionResult> GetResultVote(int PokerRoomId, int PlayerId, string ValueCard, int TopicId, string Comment, int password)
         {
             using (var _context = new PokerPlanningContext())
             {
@@ -464,7 +479,7 @@ namespace PlanningPoker.Controllers
                 }
             }
             await hubContext.Clients.All.SendAsync("UpdatePage");
-            return RedirectToAction("RoomDiscussion", "ScrumRoom", new { PokerRoomId, PlayerId });
+            return RedirectToAction("RoomDiscussion", "ScrumRoom", new { PokerRoomId, PlayerId, password });
         }
 
         [HttpGet]
@@ -476,8 +491,10 @@ namespace PlanningPoker.Controllers
             {
                 topic = _context.Topics.Where(t => t.Id == id).SingleOrDefault();
 
-                ViewBag.PokerRoomId = topic.PokerRoomId;
+                ViewBag.Password = _context.PokerRooms.FirstOrDefault(rid => rid.Id == topic.PokerRoomId).Password;
 
+                ViewBag.PokerRoomId = topic.PokerRoomId;
+   
                 var player = _context.Players.Where(p => p.PokerRoomId == topic.PokerRoomId && p.Role == 2).SingleOrDefault();
                 ViewBag.PlayerId = player.Id;
             }
@@ -496,9 +513,10 @@ namespace PlanningPoker.Controllers
                     _context.SaveChanges();
 
                     ViewBag.PokerRoomId = topic.PokerRoomId;
-
+                    ViewBag.Password = _context.PokerRooms.FirstOrDefault(rid => rid.Id == topic.PokerRoomId).Password;
                     var player = _context.Players.Where(p => p.PokerRoomId == topic.PokerRoomId && p.Role == 2).SingleOrDefault();
                     ViewBag.PlayerId = player.Id;
+                    
                 }
             }
             return View(topic);
@@ -513,8 +531,9 @@ namespace PlanningPoker.Controllers
             {
                 topic = _context.Topics.Where(t => t.Id == id).SingleOrDefault();
 
-                ViewBag.PokerRoomId = topic.PokerRoomId;
+                ViewBag.Password = _context.PokerRooms.FirstOrDefault(rid => rid.Id == topic.PokerRoomId).Password;
 
+                ViewBag.PokerRoomId = topic.PokerRoomId;
                 var player = _context.Players.Where(p => p.PokerRoomId == topic.PokerRoomId && p.Role == 2).SingleOrDefault();
                 ViewBag.PlayerId = player.Id;
             }
@@ -529,11 +548,17 @@ namespace PlanningPoker.Controllers
 
             int PlayerId;
 
+            int Password;
+
             using (var _context = new PokerPlanningContext())
             {
+               
                topic = _context.Topics.Where(t => t.Id == topic.Id).SingleOrDefault();
 
                 PokerRoomId = topic.PokerRoomId;
+
+                Password = _context.PokerRooms.FirstOrDefault(rid => rid.Id == PokerRoomId).Password.Value;
+                ViewBag.Password = Password;
 
                 var player = _context.Players.Where(p => p.PokerRoomId == topic.PokerRoomId && p.Role == 2).SingleOrDefault();
                 PlayerId = player.Id;
@@ -544,7 +569,7 @@ namespace PlanningPoker.Controllers
                 _context.Topics.Remove(topic);
                 _context.SaveChanges();
             }
-            return RedirectToAction("RoomEntrance", new { PokerRoomId, PlayerId });
+            return RedirectToAction("RoomEntrance", new { PokerRoomId, PlayerId, Password });
         }
     }
 }
