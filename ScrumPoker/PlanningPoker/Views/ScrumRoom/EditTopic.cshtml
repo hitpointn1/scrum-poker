@@ -41,7 +41,8 @@
     <a asp-controller="ScrumRoom"
        asp-action="RoomEntrance"
        asp-route-PokerRoomId="@ViewBag.PokerRoomId" 
-       asp-route-PlayerId="@ViewBag.PlayerId">Вернуться назад</a>
+       asp-route-PlayerId="@ViewBag.PlayerId"
+       asp-route-Password="@ViewBag.Password">Вернуться назад</a>
 </div>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
